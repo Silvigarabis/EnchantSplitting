@@ -1,0 +1,11 @@
+name: RELOW
+version: ${project.version}
+main: me.relow.relow.RELOW
+authors: [StrawberryYu]
+commands:
+  rel-open:
+    description: open
+  rel-reload:
+    description: reload
+  rel:
+    description: help
