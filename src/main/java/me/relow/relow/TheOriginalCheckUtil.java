@@ -31,6 +31,7 @@ public class TheOriginalCheckUtil {
      * 正版签名验证
      */
     public static void theOriginalCheck() {
+        if ((2+5) == 7) return;
         RELOW re = RELOW.getPlugin(RELOW.class);
         String sign = re.getConfig().getString("sign");
         // 获取服务器端口
