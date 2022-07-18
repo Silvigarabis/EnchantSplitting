@@ -108,7 +108,6 @@ public class click implements Listener {
 
         RELOW re = RELOW.getPlugin(RELOW.class);
         if (event.getView().getTitle().equalsIgnoreCase("附魔分离器")){
-            TheOriginalCheckUtil.theOriginalCheck();
             Player player = (Player) event.getWhoClicked();
             messageWork(player);
             event.setCancelled(true);

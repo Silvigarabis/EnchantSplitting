@@ -23,7 +23,6 @@ public final class RELOW extends JavaPlugin {
     @Override
     public void onEnable() {
 
-        TheOriginalCheckUtil.theOriginalCheck();
 
         if(getServer().getPluginManager().getPlugin("PlayerPoints") == null){
             getLogger().info("未找到点卷插件！");

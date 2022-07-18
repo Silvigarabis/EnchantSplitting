@@ -17,7 +17,6 @@ import java.util.Set;
 
 public class GUI {
     public static void GUI1(Player player, ItemStack itemStack){
-        TheOriginalCheckUtil.theOriginalCheck();
         //新建GUI
         Inventory REgui = Bukkit.createInventory(player, 27, "附魔分离器");
         ItemStack border1 = new ItemStack(Material.STAINED_GLASS_PANE);//边界1，外围

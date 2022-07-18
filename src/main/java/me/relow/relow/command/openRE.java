@@ -2,7 +2,6 @@ package me.relow.relow.command;
 
 import me.relow.relow.Config;
 import me.relow.relow.GUI;
-import me.relow.relow.TheOriginalCheckUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -18,7 +17,6 @@ public class openRE implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
-        TheOriginalCheckUtil.theOriginalCheck();
         if(sender instanceof Player){
             Player player = (Player)sender;
             ItemStack handItem = player.getItemInHand();
