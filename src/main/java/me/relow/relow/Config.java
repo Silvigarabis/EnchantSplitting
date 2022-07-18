@@ -1,5 +1,7 @@
 package me.relow.relow;
 
+import me.relow.relow.RelowLogger;
+
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -9,6 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Config {
+    private static Logger logger = RelowLogger.getLogger();
+    
     private static final File configFile = new File(RELOW.getPluginFile(), "config.yml");
     private static final YamlConfiguration configYML = new YamlConfiguration();
 
@@ -124,10 +128,10 @@ public class Config {
                     configYML.getDouble(key + ".money1"),configYML.getInt(key + ".points1"),configYML.getInt(key + ".level1"),
                     configYML.getDouble(key + ".money2"),configYML.getInt(key + ".points2"),configYML.getInt(key + ".level2"),
                     configYML.getInt(key + ".rsuccess"),configYML.getInt(key + ".wsuccess"));
-            System.out.println("[RELOW]已加载自定义权限节点:" + p.getName() + "-限制数量:" + p.getNum());
-            System.out.println("[RELOW]money1:" + p.getMoney1() + " points1:" + p.getPoints1() + "level1:" + p.getPoints1());
-            System.out.println("[RELOW]money2:" + p.getMoney2() + " points2:" + p.getPoints2() + "level2:" + p.getPoints2());
-            System.out.println("[RELOW]rsuccess:" + p.getRsuccess() + " wsuccess:" + p.getWsuccess());
+            logger.info("已加载自定义权限节点:" + p.getName() + "-限制数量:" + p.getNum());
+            logger.info("money1:" + p.getMoney1() + " points1:" + p.getPoints1() + "level1:" + p.getPoints1());
+            logger.info("money2:" + p.getMoney2() + " points2:" + p.getPoints2() + "level2:" + p.getPoints2());
+            logger.info("rsuccess:" + p.getRsuccess() + " wsuccess:" + p.getWsuccess());
             permissionsList.add(p);
             i++;
             index = "p" + i;

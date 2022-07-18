@@ -18,11 +18,11 @@ public class help implements CommandExecutor {
             }
             player.sendMessage("=========RELOW分离附魔=========");
         }else {
-            System.out.println("=========RELOW分离附魔=========");
-            System.out.println("作者:StrawberryYu | QQ:2332742172");
-            System.out.println("手持附魔物品输入 /rel-open 打开界面");
-            System.out.println("/rel-reload 重载插件");
-            System.out.println("=========RELOW分离附魔=========");
+            RelowLogger.getLogger().info("=========RELOW分离附魔=========");
+            RelowLogger.getLogger().info("作者:StrawberryYu | QQ:2332742172");
+            RelowLogger.getLogger().info("手持附魔物品输入 /rel-open 打开界面");
+            RelowLogger.getLogger().info("/rel-reload 重载插件");
+            RelowLogger.getLogger().info("=========RELOW分离附魔=========");
         }
         return false;
     }

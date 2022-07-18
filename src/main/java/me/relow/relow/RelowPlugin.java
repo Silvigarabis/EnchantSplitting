@@ -1,5 +1,6 @@
 package me.relow.relow;
 
+import me.relow.relow.RelowLogger;
 import me.relow.relow.command.help;
 import me.relow.relow.command.openRE;
 import me.relow.relow.command.reload;
@@ -13,7 +14,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 
-public final class RELOW extends JavaPlugin {
+public final class RelowPlugin extends JavaPlugin {
+    private Logger logger;
+    
     private static File pluginFile;
     public static File getPluginFile(){
         return pluginFile;
@@ -22,27 +25,28 @@ public final class RELOW extends JavaPlugin {
 
     @Override
     public void onEnable() {
-
-
+        RelowLogger.init(this);
+        this.logger = RelowLogger.getLogger();
+        
         if(getServer().getPluginManager().getPlugin("PlayerPoints") == null){
-            getLogger().info("未找到点卷插件！");
+            logger.info("未找到点卷插件！");
         }else {
             if (Bukkit.getPluginManager().isPluginEnabled("PlayerPoints")) {
-                getLogger().info("已找到PlayerPoints插件！");
+                logger.info("已找到PlayerPoints插件！");
             }
         }
 
         // Plugin startup logic
         if (!setupEconomy()) {
-            getLogger().info("未找到经济插件！");
+            logger.info("未找到经济插件！");
         }else {
-            getLogger().info("已找到Vault！");
+            logger.info("已找到Vault！");
         }
 
-        getLogger().info("\033[36m= = = = = = = = = = = = = = = = = = = = = = \033[0m");
-        getLogger().info("RE-LOW");
-        getLogger().info("作者:StrawberryYu || QQ:2332742172");
-        getLogger().info("\033[36m= = = = = = = = = = = = = = = = = = = = = = \033[0m");
+        logger.info("\033[36m= = = = = = = = = = = = = = = = = = = = = = \033[0m");
+        logger.info("RE-LOW");
+        logger.info("作者:StrawberryYu || QQ:2332742172");
+        logger.info("\033[36m= = = = = = = = = = = = = = = = = = = = = = \033[0m");
 
         getConfig().options().copyDefaults();
         saveDefaultConfig();

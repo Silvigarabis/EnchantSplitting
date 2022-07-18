@@ -1,5 +1,6 @@
 package me.relow.relow.command;
 
+import me.relow.relow.RelowLogger;
 import me.relow.relow.Config;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -20,7 +21,7 @@ public class reload implements CommandExecutor {
             }
         }else {
             Config.loadConfig();
-            System.out.println("重载成功!");
+            RelowLogger.getLogger().info("重载成功!");
         }
 
         return false;
