@@ -1,5 +1,6 @@
 package me.relow.relow.command;
 
+import me.relow.relow.RelowLogger;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;

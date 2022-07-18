@@ -12,9 +12,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.logging.Logger;
 import java.io.File;
 
-public final class RelowPlugin extends JavaPlugin {
+public final class RELOW extends JavaPlugin {
     private Logger logger;
     
     private static File pluginFile;
