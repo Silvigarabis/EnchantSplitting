@@ -1,293 +1,85 @@
 package me.relow.relow;
 
-import me.relow.relow.RelowLogger;
+import me.relow.relow.Group;
 
-import org.bukkit.configuration.InvalidConfigurationException;
-import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
 public class Config {
-    private static Logger logger = RelowLogger.getLogger();
+    private static Logger logger;
     
-    private static final File configFile = new File(RELOW.getPluginFile(), "config.yml");
-    private static final YamlConfiguration configYML = new YamlConfiguration();
-
-    //消息
-    private static String prefix;
-    private static String close;
-    private static String money1Not;
-    private static String money1Yes;
-    private static String level1Yes;
-    private static String level1Not;
-    private static String points1Yes;
-    private static String points1Not;
-
-    private static String money2Not;
-    private static String money2Yes;
-    private static String level2Yes;
-    private static String level2Not;
-    private static String points2Yes;
-    private static String points2Not;
-
-    private static String fenliFail;
-    private static String washFail;
-    private static String notAllow;
-    private static String Lore;
-
-    private static List<String> noRemove;
-
-    private static int R_success_rate;
-    private static int T_success_rate;
-
-    private static boolean money;
-    private static boolean money2;
-    private static boolean level;
-    private static boolean level2;
-    private static boolean points;
-    private static boolean points2;
-
-    private static double money_amount;
-    private static double money_amount2;
-    private static int level_amount;
-    private static int level_amount2;
-    private static int points_amount;
-    private static int points_amount2;
-
-    private static List<permissions> permissionsList = new ArrayList<>();
-    private static int defaultNum;
-
-    public static void loadConfig() {
-        //载入config.yml
-        try {
-            configYML.load(configFile);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InvalidConfigurationException e) {
-            e.printStackTrace();
+    private static ConfigurationSection config;
+    
+    private static List<String> noRemoveEnchants;
+    private static String noRemoveLore;
+    
+    private static boolean splitCostExperience;
+    private static boolean splitCostMoney;
+    private static boolean splitCostPoints;
+    private static boolean grindCostExperience;
+    private static boolean grindCostMoney;
+    private static boolean grindCostPoints;
+    
+    public static boolean load(JavaPlugin plugin){
+        logger = plugin.getLogger();
+        config = plugin.getConfig();
+        
+        noRemoveEnchants = config.getStringList("noRemoveEnchant", new ArrayList<String>());
+        noRemoveLore = config.getString("noRemoveLore", "");
+        
+        splitCostExperience = config.getBoolean("splitCostExperience", false);
+        splitCostMoney = config.getBoolean("splitCostExperience", false);
+        splitCostPoints = config.getBoolean("splitCostExperience", false);
+        grindCostExperience = config.getBoolean("grindCostExperience", false);
+        grindCostMoney = config.getBoolean("grindCostExperience", false);
+        grindCostPoints = config.getBoolean("grindCostExperience", false);
+        
+        if (splitCostMoney || grindCostMoney && !plugin.hasEconomy()){
+            logger.warning("未找到可用的经济插件");
+            logger.warning("将会禁用金币消耗");
+            splitCostMoney = false;
+            grindCostMoney = false;
         }
-        //从config.yml获得每个值
-        prefix = configYML.getString("prefix");
-        close = configYML.getString("close");
-        money1Not = configYML.getString("money1Not");
-        money1Yes = configYML.getString("money1Yes");
-        level1Yes = configYML.getString("level1Yes");
-        level1Not = configYML.getString("level1Not");
-        points1Not = configYML.getString("points1Not");
-        points1Yes = configYML.getString("points1Yes");
-
-        money2Not = configYML.getString("money2Not");
-        money2Yes = configYML.getString("money2Yes");
-        level2Yes = configYML.getString("level2Yes");
-        level2Not = configYML.getString("level2Not");
-        points2Not = configYML.getString("points2Not");
-        points2Yes = configYML.getString("points2Yes");
-
-        noRemove = configYML.getStringList("noRemove");
-
-        fenliFail = configYML.getString("fenliFail");
-        washFail = configYML.getString("washFail");
-        notAllow = configYML.getString("notAllow");
-        Lore = configYML.getString("Lore");
-
-
-
-        R_success_rate = configYML.getInt("R_success_rate");
-        T_success_rate = configYML.getInt("T_success_rate");
-
-        money = configYML.getBoolean("money");
-        money2 = configYML.getBoolean("money2");
-        level = configYML.getBoolean("level");
-        level2 = configYML.getBoolean("level2");
-        points = configYML.getBoolean("points");
-        points2 = configYML.getBoolean("points2");
-
-        money_amount = configYML.getDouble("money_amount");
-        money_amount2 = configYML.getDouble("money_amount2");
-        level_amount = configYML.getInt("level_amount");
-        level_amount2 = configYML.getInt("level_amount2");
-        points_amount = configYML.getInt("points_amount");
-        points_amount2 = configYML.getInt("points_amount2");
-        defaultNum = configYML.getInt("default");
-
-
-
-        loadPermissions();
-    }
-
-    public static void loadPermissions(){
-        String prefix = "permissions.";
-        int i = 1;
-        String index = "p" + i;
-        String key = prefix + index;
-        while (configYML.getString(key + ".name") != null){
-            permissions p = new permissions(configYML.getString(key + ".name"),configYML.getInt(key + ".num"),
-                    configYML.getDouble(key + ".money1"),configYML.getInt(key + ".points1"),configYML.getInt(key + ".level1"),
-                    configYML.getDouble(key + ".money2"),configYML.getInt(key + ".points2"),configYML.getInt(key + ".level2"),
-                    configYML.getInt(key + ".rsuccess"),configYML.getInt(key + ".wsuccess"));
-            logger.info("已加载自定义权限节点:" + p.getName() + "-限制数量:" + p.getNum());
-            logger.info("money1:" + p.getMoney1() + " points1:" + p.getPoints1() + "level1:" + p.getPoints1());
-            logger.info("money2:" + p.getMoney2() + " points2:" + p.getPoints2() + "level2:" + p.getPoints2());
-            logger.info("rsuccess:" + p.getRsuccess() + " wsuccess:" + p.getWsuccess());
-            permissionsList.add(p);
-            i++;
-            index = "p" + i;
-            key = prefix + index;
+        if (splitCostPoints || grindCostPoints && !plugin.hasPlayerPoints()){
+            logger.warning("未找到PlayerPoints插件");
+            logger.warning("将会禁用点券消耗");
+            splitCostPoints = false;
+            grindCostPoints = false;
         }
-
+        
+        Group.setDefaultGroup(config);
+        logger.info("已加载默认组！");
+        
+    }
+    
+    public static List<String> getNoRemoveEnchants(){
+        return noRemoveEnchants;
+    }
+    public static String getNoRemoveLore(){
+        return noRemoveLore;
+    }
+    public static boolean isSplitCostExperience(){
+        return splitCostExperience;
+    }
+    public static boolean isSplitCostMoney(){
+        return splitCostMoney;
+    }
+    public static boolean isSplitCostPoints(){
+        return splitCostPoints;
+    }
+    public static boolean isGrindCostExperience(){
+        return grindCostExperience;
+    }
+    public static boolean isGrindCostMoney(){
+        return grindCostMoney;
+    }
+    public static boolean isGrindCostPoints(){
+        return grindCostPoints;
     }
 
-
-    public static List<String> getNoRemove() {
-        return noRemove;
-    }
-
-    public static File getConfigFile() {
-        return configFile;
-    }
-
-    public static YamlConfiguration getConfigYML() {
-        return configYML;
-    }
-
-    public static String getPrefix() {
-        return prefix;
-    }
-
-    public static String getClose() {
-        return close;
-    }
-
-
-    public static String getFenliFail() {
-        return fenliFail;
-    }
-
-    public static String getWashFail() {
-        return washFail;
-    }
-
-    public static String getNotAllow() {
-        return notAllow;
-    }
-
-    public static int getR_success_rate() {
-        return R_success_rate;
-    }
-
-    public static int getT_success_rate() {
-        return T_success_rate;
-    }
-
-    public static boolean isMoney() {
-        return money;
-    }
-
-    public static boolean isMoney2() {
-        return money2;
-    }
-
-    public static boolean isLevel() {
-        return level;
-    }
-
-    public static boolean isLevel2() {
-        return level2;
-    }
-
-    public static double getMoney_amount() {
-        return money_amount;
-    }
-
-    public static double getMoney_amount2() {
-        return money_amount2;
-    }
-
-    public static int getLevel_amount() {
-        return level_amount;
-    }
-
-    public static int getLevel_amount2() {
-        return level_amount2;
-    }
-
-    public static String getLore() {
-        return Lore;
-    }
-
-    public static String getMoney1Not() {
-        return money1Not;
-    }
-
-    public static String getMoney1Yes() {
-        return money1Yes;
-    }
-
-    public static String getLevel1Yes() {
-        return level1Yes;
-    }
-
-    public static String getLevel1Not() {
-        return level1Not;
-    }
-
-    public static String getMoney2Not() {
-        return money2Not;
-    }
-
-    public static String getMoney2Yes() {
-        return money2Yes;
-    }
-
-    public static String getLevel2Yes() {
-        return level2Yes;
-    }
-
-    public static String getLevel2Not() {
-        return level2Not;
-    }
-
-    public static List<permissions> getPermissionsList() {
-        return permissionsList;
-    }
-
-    public static int getDefaultNum() {
-        return defaultNum;
-    }
-
-    public static boolean isPoints() {
-        return points;
-    }
-
-    public static boolean isPoints2() {
-        return points2;
-    }
-
-    public static int getPoints_amount() {
-        return points_amount;
-    }
-
-    public static int getPoints_amount2() {
-        return points_amount2;
-    }
-
-    public static String getPoints1Yes() {
-        return points1Yes;
-    }
-
-    public static String getPoints1Not() {
-        return points1Not;
-    }
-
-    public static String getPoints2Yes() {
-        return points2Yes;
-    }
-
-    public static String getPoints2Not() {
-        return points2Not;
-    }
 }

@@ -1,0 +1,38 @@
+#全局消息设置
+#消息前缀
+prefix: '&b[RELOW]'
+#关闭分析器消息
+closeGui: '&a您关闭了附魔分离器'
+# GUI名称
+guiTitle: '附魔分离器'
+#############
+# 分离附魔消息 #
+#############
+splitCostExperience: '&a您消耗了{}级经验来分离附魔!'
+splitCostExperienceNotEnough: '&c等级不足，分离附魔需要{}级经验!'
+splitCostMoney: '&a您花费了{}个金币来分离附魔!'
+splitCostMoneyNotEnough: '&c您需要{}个金币来分离附魔'
+splitCostPoints: '&a您使用了{}张点券来分离附魔!'
+splitCostPointsNotEnough: '&c您需要{}张点券来分离附魔'
+
+#############
+# 洗去附魔消息 #
+#############
+grindCostExperience: '&a您消耗了{}级经验洗去附魔!'
+grindCostExperienceNotEnough: '&c等级不足，需要{}级经验以洗去附魔!'
+grindCostMoney: '&a您花费了{}个金币洗去附魔!'
+grindCostMoneyNotEnough: '&c您需要{}个金币来洗去附魔'
+grindCostPoints: '&a您使用了{}张点券洗去附魔!'
+grindCostPointsNotEnough: '&c您需要{}张点券来洗去附魔'
+
+############
+# 不好的消息 #
+############
+# 分离失败
+splitFailed: '&5很抱歉，附魔分离失败了……'
+# 洗去附魔失败
+grindFailed: '&5很抱歉，洗去附魔失败了……'
+# 不允许放入附魔分析器
+itemNotValid: '&a该物品无法放入附魔分析器!'
+# 带此Lore的物品无法分析附魔
+itemLoreNotValid: '&c不可放入附魔分析器'

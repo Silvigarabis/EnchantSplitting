@@ -1,0 +1,23 @@
+normal:
+    # 此设置限制了一次能够分析出来的附魔的数量,最少为1
+    visibleEnchantmentsCount: 3
+    
+    # 分离附魔等级消耗数
+    splitExperienceCost: 5
+    # 分离附魔金币消耗数
+    splitMoneyCost: 500
+    # 分离附魔点卷消耗数
+    splitPointsCost: 5
+    
+    # 洗去附魔等级消耗数
+    grindExperienceCost: 1
+    # 洗去附魔金币消耗数
+    grindMoneyCost: 100
+    # 分离附魔点卷消耗数
+    grindPointsCost: 1
+    
+    # 分离附魔成功率（百分率，100为一定成功）
+    splitSuccessRate: 100
+    # 洗去附魔成功率（百分率，100为一定成功）
+    grindSuccessRate: 100
+

@@ -1,19 +1,14 @@
-package me.relow.relow.event;
+package me.relow.relow;
 
-import me.relow.relow.*;
-import org.black_ixx.playerpoints.PlayerPoints;
-import org.black_ixx.playerpoints.PlayerPointsAPI;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.enchantments.Enchantment;
+import me.relow.relow.RelowGui;
+import me.relow.relow.RelowController;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.EnchantmentStorageMeta;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.Map;
 import java.util.Random;
@@ -21,90 +16,47 @@ import java.util.Set;
 
 import static org.bukkit.Bukkit.getServer;
 
-public class click implements Listener {
-
-    private static String prefix;
-    private static String close;
-    private static String money1Not;
-    private static String money1Yes;
-    private static String level1Yes;
-    private static String level1Not;
-    private static String points1Yes;
-    private static String points1Not;
-
-    private static String money2Not;
-    private static String money2Yes;
-    private static String level2Yes;
-    private static String level2Not;
-    private static String points2Yes;
-    private static String points2Not;
-
-    private static String fenliFail;
-    private static String washFail;
-    private static String notAllow;
-
-    public void messageWork(Player player){
-        String temp;
-
-        prefix = ChatColor.translateAlternateColorCodes('&', Config.getPrefix());
-
-        close = ChatColor.translateAlternateColorCodes('&', Config.getClose());
-
-        points1Yes = ChatColor.translateAlternateColorCodes('&',Config.getPoints1Yes());
-        temp = points1Yes.replace("%points1%",String.valueOf(Config.getPoints_amount()));
-        points1Yes = temp;
-
-        points2Yes = ChatColor.translateAlternateColorCodes('&',Config.getPoints2Yes());
-        temp = points2Yes.replace("%points2%",String.valueOf(Config.getPoints_amount2()));
-        points2Yes = temp;
-
-        points1Not = ChatColor.translateAlternateColorCodes('&',Config.getPoints1Not());
-        temp = points1Not.replace("%points2%",String.valueOf(Config.getPoints_amount()));
-        points1Not = temp;
-
-        points2Not = ChatColor.translateAlternateColorCodes('&',Config.getPoints2Not());
-        temp = points2Not.replace("%points2%",String.valueOf(Config.getPoints_amount2()));
-        points2Not = temp;
-
-        money1Not = ChatColor.translateAlternateColorCodes('&', Config.getMoney1Not());
-        temp = money1Not.replace("%money1%",String.valueOf(Config.getMoney_amount()));
-        money1Not = temp;
-
-        money1Yes = ChatColor.translateAlternateColorCodes('&', Config.getMoney1Yes());
-        temp = money1Yes.replace("%money1%",String.valueOf(Config.getMoney_amount()));
-        money1Yes = temp;
-
-        level1Yes = ChatColor.translateAlternateColorCodes('&', Config.getLevel1Yes());
-        temp = level1Yes.replace("%level1%",String.valueOf(Config.getLevel_amount()));
-        level1Yes = temp;
-
-        level1Not = ChatColor.translateAlternateColorCodes('&', Config.getLevel1Not());
-        temp = level1Not.replace("%level1%",String.valueOf(Config.getLevel_amount()));
-        level1Not = temp;
-
-        money2Not = ChatColor.translateAlternateColorCodes('&', Config.getMoney2Not());
-        temp = money2Not.replace("%money2%",String.valueOf(Config.getMoney_amount2()));
-        money2Not = temp;
-
-        money2Yes = ChatColor.translateAlternateColorCodes('&', Config.getMoney2Yes());
-        temp = money2Yes.replace("%money2%",String.valueOf(Config.getMoney_amount2()));
-        money2Yes = temp;
-
-        level2Yes = ChatColor.translateAlternateColorCodes('&', Config.getLevel2Yes());
-        temp = level2Yes.replace("%level2%",String.valueOf(Config.getLevel_amount2()));
-        level2Yes = temp;
-
-        level2Not = ChatColor.translateAlternateColorCodes('&', Config.getLevel2Not());
-        temp = level2Not.replace("%level2%",String.valueOf(Config.getLevel_amount2()));
-        level2Not = temp;
-
-        fenliFail = ChatColor.translateAlternateColorCodes('&', Config.getFenliFail());
-        washFail = ChatColor.translateAlternateColorCodes('&', Config.getWashFail());
-        notAllow = ChatColor.translateAlternateColorCodes('&', Config.getNotAllow());
+public class InventoryGuiListener extends RelowController implements Listener {
+    
+    boolean disabled = false;
+    
+    public void setDisabled(boolean toDisable){
+        this.disabled = toDisable;
+    }
+    
+    public void setDisabled(){
+        this.setDisabled(true);
+    }
+    
+    @EventHander
+    public void inventoryClickCondition(InventoryClickEvent event){
+        if (disabled) return;
+        if (RelowController.isPlayerOpenedRelowGui((Player) event.getView().getPlayer()))
+            super.inventoryClick(event);
+    }
+    /*
+    @EventHander
+    public void inventoryOpenCondition(InventoryOpenEvent event){
+        if (RelowController.isRelowGuiView(event.getView()))
+            super.inventoryOpen(event);
+    }
+    */
+    @EventHander
+    public void inventoryCloseCondition(InventoryCloseEvent event){
+        if (disabled) return;
+        if (RelowController.isPlayerOpenedRelowGui((Player) event.getView().getPlayer()))
+            super.inventoryClose(event);
     }
 
+    @EventHander
+    public void inventoryDrapCondition(InventoryDragEvent event){
+        if (disabled) return;
+        if (RelowController.isPlayerOpenedRelowGui((Player) event.getView().getPlayer()))
+            event.setCancelled(true);
+    }
+    /*
     @EventHandler
-    public void openGUI(InventoryClickEvent event){
+    public void inventoryOpened(InventoryClickEvent event){
 
         RELOW re = RELOW.getPlugin(RELOW.class);
         if (event.getView().getTitle().equalsIgnoreCase("附魔分离器")){
@@ -369,38 +321,5 @@ public class click implements Listener {
             }
         }
     }
-
-    public void func(ItemStack itemStack, ItemStack enchnbook, Player player) {
-        if (itemStack != null && enchnbook != null) {
-            EnchantmentStorageMeta storageMeta = (EnchantmentStorageMeta) enchnbook.getItemMeta();
-            Map enchatment_map = storageMeta.getStoredEnchants();
-            Set<Enchantment> enchantmentSet = enchatment_map.keySet();
-            ItemMeta itemMeta = itemStack.getItemMeta();
-
-            for (Enchantment key : enchantmentSet) {
-                if (itemMeta.removeEnchant(key)) {
-                    itemStack.setItemMeta(itemMeta);
-                    player.getInventory().addItem(itemStack);
-                }
-            }
-        }
-    }
-
-    public boolean judgeFull(Player player){
-
-        if(player.getInventory().firstEmpty() == -1){
-            return true;//背包满了
-        }
-        return false;
-    }
-
-    public permissions judgePer(Player player){
-        //返回其所在权限组能够看到的数量
-        for(int i = 0; i < Config.getPermissionsList().size(); i++){
-            if(player.hasPermission(Config.getPermissionsList().get(i).getName())){
-                return Config.getPermissionsList().get(i);
-            }
-        }
-        return null;
-    }
+    */
 }

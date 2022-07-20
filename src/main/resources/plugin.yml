@@ -1,11 +1,28 @@
-name: RELOW
+name: Relow
+description: 允许玩家从装备上移除附魔
 version: ${project.version}
-main: me.relow.relow.RELOW
-authors: [StrawberryYu]
+api-version: "1.17"
+main: me.relow.relow.RelowPlugin
+authors: [StrawberryYu, Silvigarabis, RepentStar]
+softdepend: ["Vault", "PlayerPoints"]
 commands:
-  rel-open:
-    description: open
-  rel-reload:
-    description: reload
-  rel:
-    description: help
+  relow:
+    description: relow main command
+    usage: /<command> [help;relow;reload]
+
+permissions:
+  relow.*:
+    description: Gives access to everything.
+    children:
+      relow.relow: true
+      relow.help: true
+      relow.reload: true
+  relow.reload:
+    description: Able to reload config
+    default: op
+  relow.relow:
+    description: Can use relow
+    default: true
+  relow.help:
+    description: can get help message about relow
+    default: true
