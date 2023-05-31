@@ -29,33 +29,34 @@ public class MainCommandExecutor implements CommandExecutor {
             return true;
         }
         
-        if (args.length == 0 || args[0] == "gui"){
+        if (args.length == 0 || args[0].equals("gui")){
             if (sender instanceof Player){
                 Player player = (Player)sender;
                 new ESplitterController(player);
             } else {
                 sender.sendMessage("仅玩家可用");
             }
-        } else if (args[0] == "debug"){
+        } else if (args[0].equals("debug")){
             if (!sender.hasPermission("esplitter.debug")){
                 sender.sendMessage("没有使用权限");
                 return true;
             }
             if (args.length >= 2){
-                boolean mode = args[1] == "true";
+                boolean mode = args[1].equals("true");
                 ESplitterPlugin.getPlugin().setDebugMode(mode);
                 sender.sendMessage("Debug 模式被设置为 "+mode);
             } else {
                 sender.sendMessage("Debug 模式:"+ESplitterPlugin.getPlugin().isDebugMode());
             }
-        } else if (args[0] == "reload"){
+        } else if (args[0].equals("reload")){
             sender.sendMessage("not implemented");
             
-        } else if (args[0] == "help"){
+        } else if (args[0].equals("help")){
             sender.sendMessage("用法：/"+label+" [gui|help|reload|debug]");
             
         } else {
             sender.sendMessage("未知的命令格式");
+            return false;
             
         }
         
