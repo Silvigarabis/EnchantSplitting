@@ -43,10 +43,10 @@ public class MainCommandExecutor implements CommandExecutor {
             }
             if (args.length >= 2){
                 boolean mode = args[1] == "true";
-                ESplitter.getPlugin().setDebugMode(mode);
+                ESplitterPlugin.getPlugin().setDebugMode(mode);
                 sender.sendMessage("Debug 模式被设置为 "+mode);
             } else {
-                sender.sendMessage("Debug 模式:"+ESplitter.getPlugin().isDebugMode());
+                sender.sendMessage("Debug 模式:"+ESplitterPlugin.getPlugin().isDebugMode());
             }
         } else if (args[0] == "reload"){
             sender.sendMessage("not implemented");
