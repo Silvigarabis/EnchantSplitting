@@ -1,0 +1,22 @@
+name: ${project.name}
+description: 允许玩家从装备上移除附魔
+version: ${project.version}
+api-version: "1.17"
+main: io.github.silvigarabis.esplitter.ESplitterPlugin
+authors: [Silvigarabis]
+# softdepend: [Vault, PlayerPoints]
+commands:
+  esplitter:
+    description: ${project.name} main command
+    usage: 'Usage: /<command> [help|gui|reload]'
+    aliases: [esgui]
+permissions:
+  esplitter.reload:
+    description: Be able to reload config
+    default: op
+  esplitter.command:
+    description: Can use ${project.name}
+    default: true
+  esplitter.help:
+    description: can get help message about ${project.name}
+    default: true
