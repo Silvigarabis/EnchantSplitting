@@ -19,20 +19,44 @@ import java.util.logging.Logger;
 
 public class MainCommandExecutor implements CommandExecutor {
     
-    private static Logger getLogger(){
-        return ESplitterPlugin.getPlugin().getLogger();
-    }
-    
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
     
-        getLogger().info("正在处理指令……");
+        Utils.getLogger().info("正在处理指令……");
         
-        if (sender instanceof Player){
-            Player player = (Player)sender;
-            new ESplitterController(player);
+        if (!sender.hasPermission("esplitter.command")){
+            sender.sendMessage("没有使用权限");
+            return true;
+        }
+        
+        if (args.length == 0 || args[0] == "gui"){
+            if (sender instanceof Player){
+                Player player = (Player)sender;
+                new ESplitterController(player);
+            } else {
+                sender.sendMessage("仅玩家可用");
+            }
+        } else if (args[0] == "debug"){
+            if (!sender.hasPermission("esplitter.debug")){
+                sender.sendMessage("没有使用权限");
+                return true;
+            }
+            if (args.length >= 2){
+                boolean mode = args[1] == "true";
+                ESplitter.getPlugin().setDebugMode(mode);
+                sender.sendMessage("Debug 模式被设置为 "+mode);
+            } else {
+                sender.sendMessage("Debug 模式:"+ESplitter.getPlugin().isDebugMode());
+            }
+        } else if (args[0] == "reload"){
+            sender.sendMessage("not implemented");
+            
+        } else if (args[0] == "help"){
+            sender.sendMessage("用法：/"+label+" [gui|help|reload|debug]");
+            
         } else {
-            sender.sendMessage("控制台无法使用");
+            sender.sendMessage("未知的命令格式");
+            
         }
         
         return true;

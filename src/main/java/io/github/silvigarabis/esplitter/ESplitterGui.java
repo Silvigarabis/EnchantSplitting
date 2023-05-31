@@ -35,12 +35,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 
 public class ESplitterGui {
-    
-    //debug日志输出，正常不使用
-    public static Logger logger = Logger.getLogger("ESplitterGui");
     
     /////////////////////////
     //  构建gui使用的基础物品
@@ -224,7 +220,7 @@ public class ESplitterGui {
         
         this.update();
         
-        logger.info("open view for player "+player.getName());
+        Logger.debug("open view for player "+player.getName());
     }
     
     public void setSelectedItem(ItemStack item){
@@ -321,9 +317,9 @@ public class ESplitterGui {
             });
             
         } else {
-            if (ench == null) logger.warning("空的附魔选择");
+            if (ench == null) Logger.debugWarning("空的附魔选择");
             
-            logger.warning("附魔分离条件未满足");
+            Logger.debugWarning("附魔分离条件未满足");
         }
         
         return isSuccess;
@@ -391,7 +387,7 @@ public class ESplitterGui {
             //没办法放回去就先拒绝放入，避免玩家物品丢失
             //可能有点问题
             if (0 == ctrl.player.getInventory().addItem(newSelection.clone()).size()){
-                logger.info("放入 "+newSelection.getType().toString());
+                Logger.debug("放入 "+newSelection.getType().toString());
                 
                 allowAction = true;
                 
@@ -402,7 +398,7 @@ public class ESplitterGui {
         }
         
         if (!allowAction){
-            logger.info("cancelled");
+            Logger.debug("cancelled");
             event.setCancelled(true);
         }
     }
@@ -411,7 +407,7 @@ public class ESplitterGui {
         EventListener.guiViews.remove(this.inventoryView);
         this.inventory = null;
         this.inventoryView = null;
-        logger.info("close view for player "+event.getPlayer().getName());
+        Logger.debug("close view for player "+event.getPlayer().getName());
     }
 
     protected void onInvDrag(InventoryDragEvent event){

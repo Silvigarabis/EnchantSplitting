@@ -32,7 +32,7 @@ public final class EventListener implements Listener {
         var isTopInv = event.getClickedInventory() == event.getView().getTopInventory();
         var slot = event.getSlot();
         
-        ESplitterPlugin.getPlugin().getLogger().info("inventoryClick: "
+        Logger.debug("inventoryClick: "
             + "isTopInv: "+isTopInv +", "
             + "ctype: "+ctype.toString() +", "
             + "action: "+action.toString() +", "
@@ -47,7 +47,7 @@ public final class EventListener implements Listener {
     @EventHandler(ignoreCancelled=true)
     public void inventoryClose(InventoryCloseEvent event){
     
-        ESplitterPlugin.getPlugin().getLogger().info("inventoryClose: "
+        Logger.debug("inventoryClose: "
         );
         
         var inventoryView = event.getView();
@@ -58,7 +58,7 @@ public final class EventListener implements Listener {
     @EventHandler(ignoreCancelled=true)
     public void inventoryDrap(InventoryDragEvent event){
         
-        ESplitterPlugin.getPlugin().getLogger().info("inventoryDrap: "
+        Logger.debug("inventoryDrap: "
         );
         
         var inventoryView = event.getView();

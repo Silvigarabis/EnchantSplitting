@@ -31,7 +31,17 @@ import java.util.logging.Logger;
 import java.io.File;
 
 public final class ESplitterPlugin extends JavaPlugin {
-
+    
+    private boolean debugMode = false;
+    
+    protected void setDebugMode(boolean enable){
+        debugMode = enable;
+    }
+    
+    public boolean isDebugMode(){
+        return debugMode;
+    }
+    
     public static ESplitterPlugin getPlugin(){
         return plugin;
     }

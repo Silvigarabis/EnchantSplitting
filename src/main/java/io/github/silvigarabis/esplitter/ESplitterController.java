@@ -27,7 +27,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 //import java.util.WeakHashMap;
-import java.util.logging.Logger;
 
 public final class ESplitterController {
     
@@ -104,7 +103,7 @@ public final class ESplitterController {
     protected void selectItemAsync(ItemStack item){
         Utils.runTask(() -> {
             selectItem(item);
-            Utils.getLogger().info("异步更改了玩家选择的物品");
+            Logger.debug("异步更改了玩家选择的物品");
         });
     }
 }

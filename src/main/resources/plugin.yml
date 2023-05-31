@@ -8,11 +8,14 @@ authors: [Silvigarabis]
 commands:
   esplitter:
     description: ${project.name} main command
-    usage: 'Usage: /<command> [help|gui|reload]'
+    usage: 'Usage: /<command> [help|gui|reload|debug]'
     aliases: [esgui]
 permissions:
   esplitter.reload:
     description: Be able to reload config
+    default: op
+  esplitter.debug:
+    description: enable debug output
     default: op
   esplitter.command:
     description: Can use ${project.name}
