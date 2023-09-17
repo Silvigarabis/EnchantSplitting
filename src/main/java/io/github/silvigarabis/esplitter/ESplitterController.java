@@ -21,6 +21,7 @@ import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import static org.bukkit.Material.ENCHANTED_BOOK;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -63,9 +64,14 @@ public final class ESplitterController {
             return;
         }
         
-        //之前没想到这里返回的是 com.google.common.collect.ImmutableMap
-        //用一个HashMap改一下
-        this.enchantments = new HashMap(item.getEnchantments());
+        //附魔书暂时不支持
+        if (item.getType().equals(ENCHANTED_BOOK)){
+            this.enchantments = new HashMap();
+        } else
+            //之前没想到这里返回的是 com.google.common.collect.ImmutableMap
+            //用一个HashMap改一下
+            this.enchantments = new HashMap(item.getEnchantments());
+        }
         
         this.gui.setEnchantmentElements(this.enchantments);
     }
