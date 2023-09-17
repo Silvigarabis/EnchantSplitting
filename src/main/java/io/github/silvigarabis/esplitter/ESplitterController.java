@@ -67,7 +67,7 @@ public final class ESplitterController {
         //附魔书暂时不支持
         if (item.getType().equals(ENCHANTED_BOOK)){
             this.enchantments = new HashMap();
-        } else
+        } else {
             //之前没想到这里返回的是 com.google.common.collect.ImmutableMap
             //用一个HashMap改一下
             this.enchantments = new HashMap(item.getEnchantments());
