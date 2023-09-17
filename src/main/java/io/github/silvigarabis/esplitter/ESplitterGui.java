@@ -351,6 +351,7 @@ public class ESplitterGui {
         if (isExtractAction(action)){
             int clickedElementIndex = getEnchantmentElementIndex(slotIndex);
             
+            //这里可能有未知的bug
             if (clickedElementIndex != -1){
                 if (this.splitEnchantmentFromElement(clickedElementIndex)){
                     allowAction = true;
@@ -359,7 +360,7 @@ public class ESplitterGui {
                 if (this.ctrl.player.getInventory().contains(this.ctrl.selectedItem)){
                     allowAction = true;
                     this.ctrl.player.getInventory().removeItem(this.ctrl.selectedItem);
-                    this.ctrl.selectItemAsync(null);
+                    this.ctrl.selectItemAsync(null); //同步处理的话，可能会因为此事件而被覆盖
                 }
             }
         }
@@ -374,18 +375,15 @@ public class ESplitterGui {
             再然后，可能会放下鼠标光标上的物品
             当碰到这些操作的时候，并且点击在显示“选择物品”的槽位
             执行如下操作：
-            允许本次操作，使物品能被放到此槽位
             记录鼠标光标上的物品
-            在下一游戏刻，更新物品选择为先前光标上的物品
-            此时，物品已经被放到了槽位
-            我们再把物品复制一份放回玩家的物品栏
-            目前还有一个没有解决的问题，那就是玩家背包满了的时候，没办法添加物品
+            尝试将物品返回玩家的物品栏
+            成功的话，则允许此次事件
+            并选择此物品
             */
             
             var newSelection = event.getCursor().clone();
             
             //没办法放回去就先拒绝放入，避免玩家物品丢失
-            //可能有点问题
             if (0 == ctrl.player.getInventory().addItem(newSelection.clone()).size()){
                 Logger.debug("放入 "+newSelection.getType().toString());
                 
