@@ -218,6 +218,14 @@ public class ESplitterGui {
         
         Logger.debug("open view for player "+player.getName());
     }
+    public void closeGui(){
+        if (this.inventoryView != null){
+            this.inventoryView.close();
+        }
+        
+        this.inventory = null;
+        this.inventoryView = null;
+    }
     
     public void setSelectedItem(ItemStack item){
         this.itemStacks.put(selectedItemIndex, item != null ? item.clone() : null);
@@ -294,7 +302,13 @@ public class ESplitterGui {
         return -1;
     }
     
-    private boolean splitEnchantmentFromElement(int elementIndex){
+    public static enum OperationMode {
+        SPLIT, GRIND
+    }
+
+    private OperationMode operationMode = OperationMode.SPLIT;
+
+    private boolean touchElement(int elementIndex){
         Enchantment ench = null;
         boolean isSuccess = false;
         try {
@@ -302,17 +316,19 @@ public class ESplitterGui {
         } catch (IndexOutOfBoundsException e){
         }
         
-        if (ench != null && this.ctrl.splitEnchantment(ench)){
-            isSuccess = true;
-            
+        if (ench != null && operationMode == OperationMode.SPLIT){
+            isSuccess = this.ctrl.splitEnchantment(ench);
+        }
+
+        if (isSuccess){
             // update page view async
             // prevent event data conflict
             Utils.runTask(() -> {
                 pages.get(curPageIndex).set(elementIndex, null);
                 setPage(curPageIndex);
             });
-            
         } else {
+
             if (ench == null) Logger.debugWarning("空的附魔选择");
             
             Logger.debugWarning("附魔分离条件未满足");
@@ -355,7 +371,7 @@ public class ESplitterGui {
             
             //取出某个附魔书项目
             if (clickedElementIndex != -1){
-                if (this.splitEnchantmentFromElement(clickedElementIndex)){
+                if (this.touchElement(clickedElementIndex)){
                     allowEventAction = true;
                 }
 
@@ -405,11 +421,10 @@ public class ESplitterGui {
         }
 
     }
-
+    
     protected void onInvClose(InventoryCloseEvent event){
+        this.closeGui();
         EventListener.guiViews.remove(this.inventoryView);
-        this.inventory = null;
-        this.inventoryView = null;
         Logger.debug("close view for player "+event.getPlayer().getName());
     }
 
