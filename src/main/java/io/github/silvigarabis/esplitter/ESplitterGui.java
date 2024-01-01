@@ -319,29 +319,33 @@ public class ESplitterGui {
     }
     
     protected void onInvClick(InventoryClickEvent event){
-        var action = event.getAction();
-        boolean allowAction = false;
-        
         if (event.getClickedInventory() != this.inventory)
             return;
+
+        boolean allowEventAction = false;
+        boolean hasAction = false;
         
+        var action = event.getAction();
         int slotIndex = event.getSlot();
-        
-        // 不用else if 是因为操作可以使用的action有重复
-        
+
         if (isInteractButtonAction(action)){
             switch (slotIndex){
                 case pageUpIndex:
                     this.pageUp();
+                    hasAction = true;
                     break;
                 case pageDownIndex:
                     this.pageDown();
+                    hasAction = true;
                     break;
                 //case cancelButtonIndex:
+                default:
+                    break;
             }
+
         }
         
-        if (isExtractAction(action)){
+        if (!hasAction && isExtractAction(action)){
             int clickedElementIndex = getEnchantmentElementIndex(slotIndex);
             
             //这里可能有未知的bug
@@ -392,6 +396,7 @@ public class ESplitterGui {
             Logger.debug("cancelled");
             event.setCancelled(true);
         }
+
     }
 
     protected void onInvClose(InventoryCloseEvent event){
@@ -402,9 +407,9 @@ public class ESplitterGui {
     }
 
     protected void onInvDrag(InventoryDragEvent event){
+        //暂时来说不会处理拖动物品，而是直接取消
         if (event.getInventory() == this.inventory)
             event.setCancelled(true);
-        
     }
 
 }
