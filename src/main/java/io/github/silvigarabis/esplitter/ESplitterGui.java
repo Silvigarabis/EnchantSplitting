@@ -351,11 +351,11 @@ public class ESplitterGui {
             //这里可能有未知的bug
             if (clickedElementIndex != -1){
                 if (this.splitEnchantmentFromElement(clickedElementIndex)){
-                    allowAction = true;
+                    allowEventAction = true;
                 }
             } else if (slotIndex == selectedItemIndex){
                 if (this.ctrl.player.getInventory().contains(this.ctrl.selectedItem)){
-                    allowAction = true;
+                    allowEventAction = true;
                     this.ctrl.player.getInventory().removeItem(this.ctrl.selectedItem);
                     this.ctrl.selectItemAsync(null); //同步处理的话，可能会因为此事件而被覆盖
                 }
@@ -384,7 +384,7 @@ public class ESplitterGui {
             if (0 == ctrl.player.getInventory().addItem(newSelection.clone()).size()){
                 Logger.debug("放入 "+newSelection.getType().toString());
                 
-                allowAction = true;
+                allowEventAction = true;
                 
                 //选择物品需要更改物品栏的所有位置，为避免与事件出现冲突，故在此异步更改
                 this.ctrl.selectItemAsync(newSelection);
@@ -392,7 +392,7 @@ public class ESplitterGui {
             
         }
         
-        if (!allowAction){
+        if (!allowEventAction){
             Logger.debug("cancelled");
             event.setCancelled(true);
         }
