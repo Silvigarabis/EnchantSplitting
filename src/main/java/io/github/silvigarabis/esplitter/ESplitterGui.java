@@ -66,19 +66,12 @@ public class ESplitterGui {
     };
     
     //中心物品位置
-    /*
     public static final int[] elementIndexes = {
         19,20,21,22,23,24,25,
         28,29,30,31,32,33,34,
         37,38,39,40,41,42,43,
         46,47,48,49,50,51,52
     }; 
-    */
-    public static final int[] elementIndexes = {
-        28,30,32,34 //测试这代码健壮不
-    }; 
-    
-    //private static final int[] centerIndexes = {31,30,32,29,33,28,34,40,39,41,38,42,37,43,22,21,23,20,24,19,25,13,12,14,11,15,10,16};
     
     //分隔线
     public static final int[] upperIndexes = {

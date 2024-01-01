@@ -48,26 +48,7 @@ public final class ESplitterPlugin extends JavaPlugin {
     private static ESplitterPlugin plugin = null;
     
     private Logger logger;
-    /*
-    private File groupConfigFile = new File(getDataFolder(), "group.yml");
-    private File messageConfigFile = new File(getDataFolder(), "message.yml");
-    
-    private ConfigurationSection groupConfig;
-    private ConfigurationSection messageConfig;
-    
-    private Economy economy = null;
-    
-    private boolean hasPlayerPoints;
-    private boolean hasEconomy;
-    
-    public boolean getHasEconomy() {
-        return hasEconomy;
-    }
 
-    public boolean getHasPlayerPoints() {
-        return hasPlayerPoints;
-    }
-*/
     @Override
     public void onEnable() {
         plugin = this;
@@ -77,113 +58,13 @@ public final class ESplitterPlugin extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new EventListener(), this);
         this.getCommand("esplitter").setExecutor(new MainCommandExecutor());
         
-        /*
-        logger.info("====================");
-        logger.info("R E L O W");
-        logger.info("源代码: https://github.com/Silvigarabis/relow");
-        logger.info("====================");
-        
-        loadSoftDepends();
-        saveDefaultConfig();
-        reloadConfig();
-        
-        if (!loadConfigClass()) return;
-        
-        Group.load(this);
-        Messager.load(this);
-        
-        
-        
-        logger.info("插件已加载");
-        */
         logger.info("Esplitter 插件 已加载。");
     }
     
     @Override
     public void onDisable() {
         plugin = null;
-        /*
-        Group.removeAllGroups();
-        */
         logger.info("插件已禁用");
         
     }
-    /*
-    public boolean loadConfigClass(){
-        if (!Config.load(this)){
-            getServer().getPluginManager().disablePlugin(this);
-            return false;
-        }
-        return true;
-    }
-    
-    @Override
-    public void saveDefaultConfig() {
-        super.saveDefaultConfig();
-        if (!messageConfigFile.exists()) {
-            saveResource("message.yml", false);
-        }
-        if (!groupConfigFile.exists()) {
-            saveResource("group.yml", false);
-        }
-    }
-    
-    @Override
-    public void reloadConfig() {
-        super.reloadConfig();
-        this.groupConfig = YamlConfiguration.loadConfiguration(groupConfigFile);
-        this.messageConfig = YamlConfiguration.loadConfiguration(messageConfigFile);
-    }
-
-    public Economy getEconomy(){
-        return economy;
-    }
-    
-    private void loadSoftDepends(){
-    
-        if (Bukkit.getPluginManager().isPluginEnabled("PlayerPoints")){
-            this.hasPlayerPoints = true;
-            logger.info("已找到PlayerPoints");
-        } else {
-            this.hasPlayerPoints = false;
-        }
-
-        this.hasEconomy = setupEconomy();
-        if (this.hasEconomy)
-            logger.info("已找到Vault");
-        else
-            logger.info("未找到Vault");
-        
-    }
-    
-    private boolean setupEconomy() {
-        if (getServer().getPluginManager().getPlugin("Vault") == null) {
-            return false;
-        }
-        RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
-        if (rsp == null) {
-            return false;
-        }
-        this.economy = rsp.getProvider();
-        return this.economy != null;
-    }
-    
-    public boolean executeReload(CommandSender sender){
-        logger.info("重新加载中");
-        reloadConfig();
-        if (!loadConfigClass()) return false;
-        Group.load(this);
-        Messager.load(this);
-        sender.sendMessage("已重新加载！");
-        return true;
-    }
-    
-    public ConfigurationSection getGroupConfig(){
-        return this.groupConfig;
-    }
-    
-    public ConfigurationSection getMessageConfig(){
-        return this.messageConfig;
-    }
-*/
 }
