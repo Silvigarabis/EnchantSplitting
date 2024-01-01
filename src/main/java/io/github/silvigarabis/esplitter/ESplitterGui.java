@@ -362,6 +362,10 @@ public class ESplitterGui {
         
         if (ench != null && operationMode == OperationMode.SPLIT){
             isSuccess = this.ctrl.splitEnchantment(ench);
+            //有时候我会想，是特性重要还是代码可读性重要
+            //比如这段地方我使用了一个“在此之外”的操作来完成了
+            //玩家可以直接拿出来附魔书的特性
+
         } else if (ench != null && operationMode == OperationMode.GRIND){
             this.ctrl.grindEnchantment(ench);
             
