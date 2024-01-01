@@ -54,6 +54,9 @@ public class ESplitterGui {
     public static final ItemStack lineItem = new ItemStack(Material.WHITE_STAINED_GLASS_PANE);
     
     public static final ItemStack noticeItem = new ItemStack(Material.OAK_SIGN);
+    
+    public static final ItemStack pageUpItem = new ItemStack(Material.GLASS);
+    public static final ItemStack pageDownItem = new ItemStack(Material.STONE);
 
     ///////////////////////////
     //构建gui使用的槽位索引
@@ -85,7 +88,7 @@ public class ESplitterGui {
     public static final int selectedItemIndex = 1;
     
     //如果有需要提醒的时候，显示提醒物品的位置
-    //public static final int notificationItemIndex = 7;
+    public static final int notificationItemIndex = 7;
     
     //显示已经选择的附魔的位置
     //public static final int selectedEnchantmentIndex = 3;
@@ -115,6 +118,7 @@ public class ESplitterGui {
         buildBorder();
         buildLine();
         buildMiscButton();
+        switchOperationMode(operationMode);
     }
     
     public void buildBorder(){
@@ -132,8 +136,9 @@ public class ESplitterGui {
     }
     
     public void buildMiscButton(){
-        itemStacks.put(pageDownIndex, new ItemStack(Material.STONE));
-        itemStacks.put(pageUpIndex, new ItemStack(Material.GLASS));
+        itemStacks.put(pageDownIndex, pageDownItem);
+        itemStacks.put(pageUpIndex, pageUpItem);
+        itemStacks.put(notificationItemIndex, noticeItem);
         
         update();
     }
@@ -308,9 +313,48 @@ public class ESplitterGui {
 
     private OperationMode operationMode = OperationMode.SPLIT;
 
+    private void switchOperationMode(){
+        if (operationMode == OperationMode.SPLIT){
+            operationMode = OperationMode.GRIND;
+        } else if (operationMode == OperationMode.GRIND){
+            operationMode = OperationMode.SPLIT;
+        }
+        
+        switchOperationMode(operationMode);
+    }
+
+    private void switchOperationMode(OperationMode mode){
+        var item = noticeItem.clone();
+        
+        var meta = item.getItemMeta();
+        
+        List<String> lore = new ArrayList<>();
+        if (operationMode == OperationMode.SPLIT){
+            lore.add("当前模式: 分离模式");
+            lore.add("点击附魔项目以分离");
+        } else if (operationMode == OperationMode.GRIND){
+            lore.add("当前模式: 去魔模式");
+            lore.add("点击附魔项目以移除");
+        } else {
+            //以目前的逻辑来说不会有，但是我加一个也没关系吧
+            lore.add("错误: 未知的模式，你做了什么？");
+        }
+
+        meta.setLore(lore);
+        
+        item.setItemMeta(meta);
+        
+        itemStacks.put(notificationItemIndex, item);
+        
+        update();
+    }
+
+    /**
+     * 玩家尝试取出附魔项目时调用此方法，根据模式的不同，有着不一样的逻辑。
+     */
     private boolean touchElement(int elementIndex){
         Enchantment ench = null;
-        boolean isSuccess = false;
+        boolean isSuccess = false; //取出操作是否成功
         try {
             ench = this.pages.get(this.curPageIndex).get(elementIndex);
         } catch (IndexOutOfBoundsException e){
@@ -318,6 +362,11 @@ public class ESplitterGui {
         
         if (ench != null && operationMode == OperationMode.SPLIT){
             isSuccess = this.ctrl.splitEnchantment(ench);
+        } else if (ench != null && operationMode == OperationMode.GRIND){
+            this.ctrl.grindEnchantment(ench);
+            
+            //永远也不应该成功取出，因为这是去魔模式
+            isSuccess = false; 
         }
 
         if (isSuccess){
