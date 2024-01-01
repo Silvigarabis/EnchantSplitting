@@ -36,6 +36,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * 使用一个大箱子的GUI作为程序UI
+ */
 public class ESplitterGui {
     
     /////////////////////////
@@ -328,6 +331,7 @@ public class ESplitterGui {
         var action = event.getAction();
         int slotIndex = event.getSlot();
 
+        //一些普通的点按按钮
         if (isInteractButtonAction(action)){
             switch (slotIndex){
                 case pageUpIndex:
@@ -345,51 +349,54 @@ public class ESplitterGui {
 
         }
         
+        //尝试取出某个项目
         if (!hasAction && isExtractAction(action)){
             int clickedElementIndex = getEnchantmentElementIndex(slotIndex);
             
-            //这里可能有未知的bug
+            //取出某个附魔书项目
             if (clickedElementIndex != -1){
                 if (this.splitEnchantmentFromElement(clickedElementIndex)){
                     allowEventAction = true;
                 }
+
+                hasAction = true;
+
+            //取出物品项目
             } else if (slotIndex == selectedItemIndex){
+                
+                //判断玩家的物品栏是否实际存在已选中的物品
+                //如果不存在，那就不可以“取出”（直接移动到物品栏或拿取到鼠标（见isExtractAction()） 
+
                 if (this.ctrl.player.getInventory().contains(this.ctrl.selectedItem)){
                     allowEventAction = true;
                     this.ctrl.player.getInventory().removeItem(this.ctrl.selectedItem);
                     this.ctrl.selectItemAsync(null); //同步处理的话，可能会因为此事件而被覆盖
                 }
+
+                hasAction = true;
             }
         }
         
-        if (isPlaceInAction(action) && slotIndex == selectedItemIndex){
-            
-            /*
-            这段代码可能有点难以理解
-            
-            首先，我们在事件中可以修改点击位置的物品
-            其次，一些操作会“取出”点击位置的物品
-            再然后，可能会放下鼠标光标上的物品
-            当碰到这些操作的时候，并且点击在显示“选择物品”的槽位
-            执行如下操作：
-            记录鼠标光标上的物品
-            尝试将物品返回玩家的物品栏
-            成功的话，则允许此次事件
-            并选择此物品
-            */
-            
+        //正在尝试放入物品
+        if (!hasAction && isPlaceInAction(action) && slotIndex == selectedItemIndex){
+            hasAction = true;
+
+            //获取玩家想放进去的物品
             var newSelection = event.getCursor().clone();
             
-            //没办法放回去就先拒绝放入，避免玩家物品丢失
-            if (0 == ctrl.player.getInventory().addItem(newSelection.clone()).size()){
+            //把物品放回玩家的物品栏
+            //这里的值是尝试将物品放入玩家的物品栏时无法直接放入的物品的数量
+            //TODO: 修复这里可能导致刷物的问题，如果选择的物品的数量大于1的话
+            
+            int giveBackResult = ctrl.player.getInventory().addItem(newSelection.clone()).size();
+            
+            if (giveBackResult == 0 /** 所有物品正常放入物品栏，可以继续 */ ){
                 Logger.debug("放入 "+newSelection.getType().toString());
-                
                 allowEventAction = true;
                 
                 //选择物品需要更改物品栏的所有位置，为避免与事件出现冲突，故在此异步更改
                 this.ctrl.selectItemAsync(newSelection);
             }
-            
         }
         
         if (!allowEventAction){
