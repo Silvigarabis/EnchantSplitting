@@ -47,7 +47,7 @@ public final class RELOW extends JavaPlugin {
         logger.info("\033[36m= = = = = = = = = = = = = = = = = = = = = = \033[0m");
         logger.info("RE-LOW");
         logger.info("作者:StrawberryYu || QQ:2332742172");
-        logger.info("此版本为修改版本，你可以在 https://github.com/Silvigarabis/EnchantmentSplitter/tree/fixed-origin-relow 找到修改后的源代码");
+        logger.info("此版本为修改版本，你可以在 https://github.com/Imeaces/EnchantmentSplitter/tree/archive/fixed-origin-relow 找到修改后的源代码");
         logger.info("主要是移除了付费验证以及让日志输出不要那么奇怪");
         logger.info("其他没有修复任何东西，因为我看不懂代码，选择重制插件");
         logger.info("\033[36m= = = = = = = = = = = = = = = = = = = = = = \033[0m");
