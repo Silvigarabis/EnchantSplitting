@@ -345,7 +345,7 @@ public class ESplitterGui {
         item.setItemMeta(meta);
         
         itemStacks.put(notificationItemIndex, item);
-        
+
         update();
     }
 
@@ -407,13 +407,16 @@ public class ESplitterGui {
                     this.pageDown();
                     hasAction = true;
                     break;
-                //case cancelButtonIndex:
+                case notificationItemIndex:
+                    this.switchOperationMode();
+                    hasAction = true;
+                    break;
                 default:
                     break;
             }
 
         }
-        
+
         //尝试取出某个项目
         if (!hasAction && isExtractAction(action)){
             int clickedElementIndex = getEnchantmentElementIndex(slotIndex);
