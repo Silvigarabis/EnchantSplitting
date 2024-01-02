@@ -46,16 +46,14 @@ public final class ESplitterPlugin extends JavaPlugin {
 
         logger.info("ESplitter 正在加载。");
         
-        if (plugin != null){
+        if (plugin == null){
+            plugin = this;
+        } else {
             logger.severe("检测到另一个插件实例正在运行！");
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
 
-        plugin = this;
-
-        logger.info("ESplitter 正在加载。");
-        
         Bukkit.getPluginManager().registerEvents(new EventListener(), this);
         this.getCommand("esplitter").setExecutor(new MainCommandExecutor());
         
