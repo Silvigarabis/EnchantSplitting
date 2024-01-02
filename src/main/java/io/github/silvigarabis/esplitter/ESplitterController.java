@@ -27,23 +27,24 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 //import java.util.WeakHashMap;
 
 public final class ESplitterController {
     
     //private WeakHashMap<Player, ESplitterController> controllers = new WeakMap();
     
-    protected Player player;
+    private Player player;
     
     private List<String> notifications = new ArrayList();
     
-    protected ItemStack selectedItem;
+    private ItemStack selectedItem;
     
     private Map<Enchantment, Integer> enchantments;
     
-    protected ESplitterGui gui;
+    private ESplitterGui gui;
     
-    protected ESplitterController(Player player){
+    public ESplitterController(Player player){
         this.gui = new ESplitterGui(this);
         this.player = player;
         
@@ -55,7 +56,7 @@ public final class ESplitterController {
     public void showGui(){
         this.gui.show(this.player);
     }
-    
+
     public void selectItem(ItemStack item){
         this.selectedItem = item;
         this.gui.setSelectedItem(item);
@@ -64,7 +65,7 @@ public final class ESplitterController {
             return;
         }
         
-        //附魔书暂时不支持
+        //附魔书暂时不支持（软限制）
         if (item.getType().equals(ENCHANTED_BOOK)){
             this.enchantments = new HashMap();
         } else {
@@ -106,7 +107,7 @@ public final class ESplitterController {
         return true;
     }
     
-    protected void selectItemAsync(ItemStack item){
+    public void selectItemAsync(ItemStack item){
         Utils.runTask(() -> {
             selectItem(item);
             Logger.debug("异步更改了玩家选择的物品");

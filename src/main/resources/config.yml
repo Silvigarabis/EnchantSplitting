@@ -1,0 +1,7 @@
+# 分离附魔的相关配置
+split-enchant:
+   # 是否需要空的书来承载分离的附魔？
+   need-empty-book: false
+
+# 配置文件版本，不要修改这个
+config-version: 1
