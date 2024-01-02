@@ -118,7 +118,7 @@ public class MainCommandExecutor implements CommandExecutor {
     
     private void openGuiCmd(CommandSender sender, String label, String[] args){
         if (args.length == 1){
-            var player = getPlayer(args[1]);
+            var player = getPlayer(args[0]);
             if (player != null){
                 openGui(player);
             } else {
