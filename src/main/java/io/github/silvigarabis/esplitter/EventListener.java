@@ -65,10 +65,9 @@ public final class EventListener implements Listener {
         if (!guiViews.containsKey(inventoryView)){
             return;
         }
-        
-        guiViews.remove(inventoryView);
 
         var gui = guiViews.get(inventoryView);
+        guiViews.remove(inventoryView);
         try {
             gui.onInvClose(event);
         } catch (Exception ex){
