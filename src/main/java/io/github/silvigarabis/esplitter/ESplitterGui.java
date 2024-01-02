@@ -236,6 +236,9 @@ public class ESplitterGui {
     
     public void setEnchantmentElements(List<EnchantmentSet> enchantSetList, Map<Enchantment, Integer> enchantments){
         
+        //复制一份，不然被改了就麻烦了
+        enchantSetList = new ArrayList<>(enchantSetList);
+
         //get elements
         var enchList = new ArrayList(enchantments.keySet());
 
