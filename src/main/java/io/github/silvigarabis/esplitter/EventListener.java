@@ -105,8 +105,8 @@ public final class EventListener implements Listener {
             try {
                 entry.getValue().closeGui();
                 entry.getKey().getPlayer().closeInventory();
-            } catch (Throwable e){
-                Logger.warningDebug(e);
+            } catch (Throwable ignored){
+                
             }
         }
 
