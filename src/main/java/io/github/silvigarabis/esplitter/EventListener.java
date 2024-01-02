@@ -105,6 +105,7 @@ public final class EventListener implements Listener {
             try {
                 entry.getValue().closeGui();
                 entry.getKey().getPlayer().closeInventory();
+                entry.getKey().getPlayer().sendMessage("[ESplitter] 出现未知错误");
             } catch (Throwable ignored){
                 
             }

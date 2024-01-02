@@ -89,18 +89,6 @@ public class ESplitterGui {
     
     //如果有需要提醒的时候，显示提醒物品的位置
     public static final int notificationItemIndex = 7;
-    
-    //显示已经选择的附魔的位置
-    //public static final int selectedEnchantmentIndex = 3;
-    
-    //显示 split 按钮的位置
-    //public static final int splitButtonIndex = 4;
-    
-    //显示 grind 按钮的位置
-    //public static final int grindButtonIndex = 5;
-
-    //显示 cancel 按钮的位置
-    //public static final int enterCancelIndex = 6;
 
     //显示 page down
     public static final int pageDownIndex = 53;
@@ -353,40 +341,39 @@ public class ESplitterGui {
      */
     private boolean touchElement(int elementIndex){
         EnchantmentSet enchantSet = null;
-        boolean isSuccess = false; //取出操作是否成功
+        boolean canPickup = false;
+        boolean removeElement = false;
+
         try {
             enchantSet = this.pages.get(this.curPageIndex).get(elementIndex);
         } catch (IndexOutOfBoundsException e){
         }
         
         if (enchantSet != null && operationMode == OperationMode.SPLIT){
-            isSuccess = this.ctrl.splitEnchantment(enchantSet);
             //有时候我会想，是特性重要还是代码可读性重要
             //比如这段地方我使用了一个“在此之外”的操作来完成了
             //玩家可以直接拿出来附魔书的特性
 
+            boolean result = this.ctrl.splitEnchantment(enchantSet);
+            canPickup = result;
+            removeElement = result;
         } else if (enchantSet != null && operationMode == OperationMode.GRIND){
-            this.ctrl.grindEnchantment(enchantSet);
+            if (this.ctrl.grindEnchantment(enchantSet)){
+                removeElement = true;
+            }
             
             //永远也不应该成功取出，因为这是去魔模式
-            isSuccess = false; 
+            canPickup = false;
         }
 
-        if (isSuccess){
-            // update page view async
-            // prevent event data conflict
+        if (removeElement){
             Utils.runTask(() -> {
                 pages.get(curPageIndex).set(elementIndex, null);
                 setPage(curPageIndex);
             });
-        } else {
-
-            if (enchantSet == null) Logger.debugWarning("空的附魔选择");
-            
-            Logger.debugWarning("附魔分离条件未满足");
         }
-        
-        return isSuccess;
+
+        return canPickup;
     }
     
     protected void onInvClick(InventoryClickEvent event){
@@ -461,7 +448,7 @@ public class ESplitterGui {
             
             int giveBackResult = ctrl.player.getInventory().addItem(newSelection.clone()).size();
             
-            if (giveBackResult == 0 /** 所有物品正常放入物品栏，可以继续 */ ){
+            if (giveBackResult == 0 /* 所有物品正常放入物品栏，可以继续 */ ){
                 Logger.debug("放入 "+newSelection.getType().toString());
                 allowEventAction = true;
                 
@@ -479,7 +466,6 @@ public class ESplitterGui {
     
     protected void onInvClose(InventoryCloseEvent event){
         this.closeGui();
-        EventListener.guiViews.remove(this.inventoryView);
         Logger.debug("close view for player "+event.getPlayer().getName());
     }
 
