@@ -27,8 +27,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.HashSet;
 
 //import java.util.WeakHashMap;
 
@@ -36,15 +34,15 @@ public final class ESplitterController {
     
     //private WeakHashMap<Player, ESplitterController> controllers = new WeakMap();
     
-    private Player player;
+    protected Player player;
     
-    private List<String> notifications = new ArrayList();
+    protected List<String> notifications = new ArrayList();
     
-    private ItemStack selectedItem;
+    protected ItemStack selectedItem;
     
-    private Map<Enchantment, Integer> enchantments;
+    protected Map<Enchantment, Integer> enchantments;
     
-    private Set<EnchantmentSet> enchantSetList;
+    protected List<EnchantmentSet> enchantSetList;
 
     private ESplitterGui gui;
     
@@ -90,7 +88,7 @@ public final class ESplitterController {
     // 感觉写的不是很好，先就这样吧，以后看看怎么弄
 
     private void divideEnchantmentSet(){
-        this.enchantSetList = new HashSet<>();
+        this.enchantSetList = new ArrayList<>();
 
         for (var ench : this.enchantments.keySet()){
             this.enchantSetList.add(new EnchantmentSet(ench));
@@ -122,7 +120,7 @@ public final class ESplitterController {
             enchantments.remove(ench);
         }
 
-        enchantSetList.remove(enchantSet);
+        enchantSetList.removeIf((e) -> e == enchantSet);
 
         playerInv.setItem(slot, selectedItem);
         
