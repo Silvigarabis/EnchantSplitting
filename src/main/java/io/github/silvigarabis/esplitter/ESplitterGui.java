@@ -161,17 +161,19 @@ public class ESplitterGui {
         var pageElements = this.pages.get(pageIndex);
         this.curPageIndex = pageIndex;
         
-        Iterator<Enchantment> iterator = pageElements.listIterator();
+        Iterator<EnchantmentSet> iterator = pageElements.listIterator();
         for (int elemIndex = 0; iterator.hasNext(); elemIndex++){
-            var ench = iterator.next();
+            var enchantSet = iterator.next();
             
-            if (ench == null){
+            if (enchantSet == null){
                 continue;
             }
             
             var item = new ItemStack(Material.ENCHANTED_BOOK);
-            item.addUnsafeEnchantment(ench, this.enchantments.get(ench));
-            
+            for (var ench : enchantSet){
+                item.addUnsafeEnchantment(ench, this.enchantments.get(ench));
+            }
+
             int invIndex = elementIndexes[elemIndex];
             
             itemStacks.put(invIndex, item);
@@ -242,18 +244,15 @@ public class ESplitterGui {
     
     private int curPageIndex = 0;
     
-    private List<List<Enchantment>> pages = new ArrayList();
+    private List<List<EnchantmentSet>> pages = new ArrayList();
     
-    public void setEnchantmentElements(Map<Enchantment, Integer> enchantments){
-        if (enchantments == null || enchantments.size() == 0){
-            this.pages.clear();
-            this.setPage(0);
-            return;
-        }
+    public void setEnchantmentElements(List<EnchantmentSet> enchantSetList, Map<Enchantment, Integer> enchantments){
         
         //get elements
         var enchList = new ArrayList(enchantments.keySet());
-        int totalPageCount = enchList.size() / elementIndexes.length + 1;
+
+        // count page
+        int totalPageCount = enchantSetList.size() / elementIndexes.length + 1;
         
         // build pages
         this.curPageIndex = 0;
@@ -261,9 +260,9 @@ public class ESplitterGui {
         for (int curPage = 0; curPage < totalPageCount; curPage++){
             
             var startIndex = curPage * elementIndexes.length;
-            var endIndex = Math.min(startIndex + elementIndexes.length, enchList.size());
+            var endIndex = Math.min(startIndex + elementIndexes.length, enchantSetList.size());
             
-            List<Enchantment> pageElements = enchList.subList(startIndex, endIndex);
+            List<EnchantmentSet> pageElements = enchantSetList.subList(startIndex, endIndex);
             this.pages.add(pageElements);
         }
         
@@ -353,21 +352,21 @@ public class ESplitterGui {
      * 玩家尝试取出附魔项目时调用此方法，根据模式的不同，有着不一样的逻辑。
      */
     private boolean touchElement(int elementIndex){
-        Enchantment ench = null;
+        EnchantmentSet enchantSet = null;
         boolean isSuccess = false; //取出操作是否成功
         try {
-            ench = this.pages.get(this.curPageIndex).get(elementIndex);
+            enchantSet = this.pages.get(this.curPageIndex).get(elementIndex);
         } catch (IndexOutOfBoundsException e){
         }
         
-        if (ench != null && operationMode == OperationMode.SPLIT){
-            isSuccess = this.ctrl.splitEnchantment(ench);
+        if (enchantSet != null && operationMode == OperationMode.SPLIT){
+            isSuccess = this.ctrl.splitEnchantment(enchantSet);
             //有时候我会想，是特性重要还是代码可读性重要
             //比如这段地方我使用了一个“在此之外”的操作来完成了
             //玩家可以直接拿出来附魔书的特性
 
-        } else if (ench != null && operationMode == OperationMode.GRIND){
-            this.ctrl.grindEnchantment(ench);
+        } else if (enchantSet != null && operationMode == OperationMode.GRIND){
+            this.ctrl.grindEnchantment(enchantSet);
             
             //永远也不应该成功取出，因为这是去魔模式
             isSuccess = false; 
@@ -382,7 +381,7 @@ public class ESplitterGui {
             });
         } else {
 
-            if (ench == null) Logger.debugWarning("空的附魔选择");
+            if (enchantSet == null) Logger.debugWarning("空的附魔选择");
             
             Logger.debugWarning("附魔分离条件未满足");
         }

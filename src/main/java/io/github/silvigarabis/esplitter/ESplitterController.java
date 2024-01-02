@@ -42,6 +42,8 @@ public final class ESplitterController {
     
     private Map<Enchantment, Integer> enchantments;
     
+    private Set<EnchantmentSet> enchantSetList;
+
     private ESplitterGui gui;
     
     public ESplitterController(Player player){
@@ -56,6 +58,10 @@ public final class ESplitterController {
     public void showGui(){
         this.gui.show(this.player);
     }
+    
+    public int getEnchantLevel(Enchantment ench){
+        return this.enchantments.get(ench);
+    }
 
     public void selectItem(ItemStack item){
         this.selectedItem = item;
@@ -68,24 +74,36 @@ public final class ESplitterController {
         //附魔书暂时不支持（软限制）
         if (item.getType().equals(ENCHANTED_BOOK)){
             this.enchantments = new HashMap();
+
         } else {
             //之前没想到这里返回的是 com.google.common.collect.ImmutableMap
             //用一个HashMap改一下
             this.enchantments = new HashMap(item.getEnchantments());
         }
-        
-        this.gui.setEnchantmentElements(this.enchantments);
+
+        this.divideEnchantmentSet();
+        this.gui.setEnchantmentElements(this.enchantSetList, this.enchantments);
+    }
+
+    // 感觉写的不是很好，先就这样吧，以后看看怎么弄
+
+    private void divideEnchantmentSet(){
+        this.enchantSetList = new Set<>();
+
+        for (var ench : this.enchantments.keySet()){
+            this.enchantSetList.add(new EnchantmentSet(ench));
+        }
+    }
+
+    public boolean splitEnchantment(EnchantmentSet enchantSet){
+        return removeEnchantment(enchantSet);
     }
     
-    public boolean splitEnchantment(Enchantment ench){
-        return removeEnchantment(ench);
+    public boolean grindEnchantment(EnchantmentSet enchantSet){
+        return removeEnchantment(enchantSet);
     }
-    
-    public boolean grindEnchantment(Enchantment ench){
-        return removeEnchantment(ench);
-    }
-    
-    public boolean removeEnchantment(Enchantment ench){
+
+    public boolean removeEnchantment(EnchantmentSet enchantSet){
         if (selectedItem == null || enchantments.size() == 0){
             return false;
         }
@@ -94,12 +112,16 @@ public final class ESplitterController {
         if (!playerInv.contains(selectedItem)){
             return false;
         }
-        
+
         var slot = playerInv.first(selectedItem);
-        
-        selectedItem.removeEnchantment(ench);
-        enchantments.remove(ench);
-        
+
+        for (var ench : enchantSet){
+            selectedItem.removeEnchantment(ench);
+            enchantments.remove(ench);
+        }
+
+        enchantSetList.remove(enchantSet);
+
         playerInv.setItem(slot, selectedItem);
         
         gui.setSelectedItem(selectedItem);
@@ -112,5 +134,8 @@ public final class ESplitterController {
             selectItem(item);
             Logger.debug("异步更改了玩家选择的物品");
         });
+    }
+    
+    public static void closeAll(){
     }
 }
