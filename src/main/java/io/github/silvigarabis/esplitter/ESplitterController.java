@@ -27,6 +27,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.HashSet;
 
 //import java.util.WeakHashMap;
 
@@ -88,7 +90,7 @@ public final class ESplitterController {
     // 感觉写的不是很好，先就这样吧，以后看看怎么弄
 
     private void divideEnchantmentSet(){
-        this.enchantSetList = new Set<>();
+        this.enchantSetList = new HashSet<>();
 
         for (var ench : this.enchantments.keySet()){
             this.enchantSetList.add(new EnchantmentSet(ench));
