@@ -227,7 +227,7 @@ public class ESplitterGui {
     }
     public void closeGui(){
         if (this.inventoryView != null){
-            this.inventoryView.close();
+            this.ctrl.player.closeInventory();
         }
         
         this.inventory = null;
