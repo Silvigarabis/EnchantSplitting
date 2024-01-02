@@ -40,8 +40,18 @@ public final class EventListener implements Listener {
         );
         
         var inventoryView = event.getView();
-        if (guiViews.containsKey(inventoryView))
-            guiViews.get(inventoryView).onInvClick(event);
+        
+        if (!guiViews.containsKey(inventoryView)){
+            return;
+        }
+        
+        var gui = guiViews.get(inventoryView);
+        try {
+            gui.onInvClick(event);
+        } catch (Exception ex){
+            closeAll();
+            throw ex;
+        }
     }
 
     @EventHandler(ignoreCancelled=true)
@@ -49,10 +59,22 @@ public final class EventListener implements Listener {
     
         Logger.debug("inventoryClose: "
         );
-        
+
         var inventoryView = event.getView();
-        if (guiViews.containsKey(inventoryView))
-            guiViews.get(inventoryView).onInvClose(event);
+        
+        if (!guiViews.containsKey(inventoryView)){
+            return;
+        }
+        
+        guiViews.remove(inventoryView);
+
+        var gui = guiViews.get(inventoryView);
+        try {
+            gui.onInvClose(event);
+        } catch (Exception ex){
+            closeAll();
+            throw ex;
+        }
     }
 
     @EventHandler(ignoreCancelled=true)
@@ -62,8 +84,34 @@ public final class EventListener implements Listener {
         );
         
         var inventoryView = event.getView();
-        if (guiViews.containsKey(inventoryView))
-            guiViews.get(inventoryView).onInvDrag(event);
-    }
+        
+        if (!guiViews.containsKey(inventoryView)){
+            return;
+        }
 
+        var gui = guiViews.get(inventoryView);
+        try {
+            gui.onInvDrag(event);
+        } catch (Exception ex){
+            closeAll();
+            throw ex;
+        }
+    }
+    
+    private static void closeAll(){
+        ESplitterPlugin.getPlugin().getLogger().severe("处理事件时出现未知错误，强行关闭所有窗口");
+
+        for (Map.Entry<InventoryView, ESplitterGui> entry : guiViews.entrySet()){
+            try {
+                entry.getValue().closeGui();
+                entry.getKey().getPlayer().closeInventory();
+            } catch (Throwable e){
+                Logger.warningDebug(e);
+            }
+        }
+
+        guiViews.clear();
+
+        ESplitterPlugin.getPlugin().getLogger().severe("所有窗口已被关闭");
+    }
 }
