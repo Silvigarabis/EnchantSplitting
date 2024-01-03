@@ -63,9 +63,11 @@ public final class ESplitterPlugin extends JavaPlugin {
             return;
         }
 
-        Bukkit.getPluginManager().registerEvents(new EventListener(), this);
+        getServer().getPluginManager().registerEvents(new EventListener(), this);
         this.getCommand("esplitter").setExecutor(new MainCommandExecutor());
         
+        this.reloadConfig();
+
         logger.info("ESplitter 已加载。");
         logger.info("ESplitter 插件，一个让玩家可以分离装备上的附魔的插件");
         logger.info("源代码： https://github.com/Imeaces/EnchantmentSplitter");

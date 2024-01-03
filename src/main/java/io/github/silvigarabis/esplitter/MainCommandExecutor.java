@@ -122,7 +122,16 @@ public class MainCommandExecutor implements CommandExecutor {
             sender.sendMessage("没有使用权限");
             return;
         }
-        sender.sendMessage("not implemented");
+        
+        sender.sendMessage("重新载入配置文件中");
+
+        ESplitterPlugin.getPlugin().reloadConfig();
+        
+        if (ESplitterPlugin.isConfigured()){
+            sender.sendMessage("已成功加载配置文件！");
+        } else {
+            sender.sendMessage("载入配置文件失败！请检查服务器控制台日志");
+        }
     }
     
     private void helpCmd(CommandSender sender, String label, String[] args){
