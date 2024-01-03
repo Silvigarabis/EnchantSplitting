@@ -40,7 +40,7 @@ public final class ESplitterPlugin extends JavaPlugin {
     }
     private static ESplitterPlugin plugin = null;
     
-    public ConfigurationSection getConfig(){
+    public ConfigurationSection getPluginConfig(){
         return config;
     }
     public static boolean isConfigured(){
@@ -89,7 +89,8 @@ public final class ESplitterPlugin extends JavaPlugin {
             super.reloadConfig();
             config = getConfig();
         } catch (InvalidConfigurationException ex){
-            getLogger().severe("尝试加载配置文件时出现错误", ex);
+            getLogger().severe("尝试加载配置文件时出现错误");
+            ex.printStackTrace;
             config = null;
         }
         if (ESplitterConfig.verifyConfig(config)){
