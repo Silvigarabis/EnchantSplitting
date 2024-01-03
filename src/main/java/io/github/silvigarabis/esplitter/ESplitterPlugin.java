@@ -90,7 +90,7 @@ public final class ESplitterPlugin extends JavaPlugin {
             config = getConfig();
         } catch (InvalidConfigurationException ex){
             getLogger().severe("尝试加载配置文件时出现错误");
-            ex.printStackTrace;
+            ex.printStackTrace();
             config = null;
         }
         if (ESplitterConfig.verifyConfig(config)){
