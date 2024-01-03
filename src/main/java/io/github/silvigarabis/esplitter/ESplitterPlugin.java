@@ -89,12 +89,15 @@ public final class ESplitterPlugin extends JavaPlugin {
             super.reloadConfig();
             config = getConfig();
         } catch (InvalidConfigurationException ex){
-            getLogger().severe("尝试加载配置文件时出现错误");
+            logger.severe("尝试加载配置文件时出现错误");
             ex.printStackTrace();
             config = null;
         }
+        
+        this.config = null;
         if (ESplitterConfig.verifyConfig(config)){
             this.config = config;
+            logger.info("配置文件加载成功！");
         } else {
             logger.warning("插件配置有误，请检查配置文件是否正确。");
             logger.warning("在确认无误后，可以使用/esplitter reload重新加载");

@@ -22,9 +22,17 @@ public class MainCommandExecutor implements CommandExecutor {
     
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-    
         ESplitterPlugin.getPlugin().getLogger().info("正在处理指令……");
-        
+
+        if (!ESplitterPlugin.isConfigured()){
+            sender.sendMessage("警告！插件配置错误！");
+            sender.sendMessage("查看控制台日志以获得详情");
+            
+            ESplitterPlugin.getPlugin().getLogger().warning("插件的配置文件没有正确配置");
+            ESplitterPlugin.getPlugin().getLogger().warning("这可能是因为其中含有语法错误，或者缺失了必要的配置");
+            ESplitterPlugin.getPlugin().getLogger().warning("尝试修正配置，并在这之后使用 /esplitter reload 重新载入配置文件");
+        }
+    
         if (!sender.hasPermission("esplitter.command")){
             sender.sendMessage("没有使用权限");
             return true;
@@ -74,6 +82,11 @@ public class MainCommandExecutor implements CommandExecutor {
     }
 
     private void guiCmd(CommandSender sender, String label, String[] args){
+        if (!ESplitterPlugin.isConfigured()){
+            sender.sendMessage("插件配置错误！");
+            return;
+        }
+
         if (args.length == 2){
             var player = getPlayer(args[1]);
             if (player != null){
@@ -117,6 +130,11 @@ public class MainCommandExecutor implements CommandExecutor {
     }
     
     private void openGuiCmd(CommandSender sender, String label, String[] args){
+        if (!ESplitterPlugin.isConfigured()){
+            sender.sendMessage("插件配置错误！");
+            return;
+        }
+
         if (args.length == 1){
             var player = getPlayer(args[0]);
             if (player != null){

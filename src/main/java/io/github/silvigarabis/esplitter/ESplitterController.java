@@ -48,7 +48,7 @@ public final class ESplitterController {
     
     public ESplitterController(Player player){
         if (!ESplitterPlugin.isConfigured()){
-            sender.sendMessage("插件配置错误！");
+            player.sendMessage("插件配置错误！");
             return;
         }
 
