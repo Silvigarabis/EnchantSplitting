@@ -14,5 +14,9 @@ public class ESplitterConfig {
     public static final String SPLIT_NEED_EMPTY_BOOK = "split-enchant.need-empty-book";
     public static final String CONFIG_VERSION = "config-version";
 
+    public static boolean verifyConfig(ConfigurationSection config){
+        return config != null;
+    }
+
     private ESplitterConfig(){}
 }

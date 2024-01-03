@@ -47,6 +47,11 @@ public final class ESplitterController {
     private ESplitterGui gui;
     
     public ESplitterController(Player player){
+        if (!ESplitterPlugin.isConfigured()){
+            sender.sendMessage("插件配置错误！");
+            return;
+        }
+
         this.gui = new ESplitterGui(this);
         this.player = player;
         
