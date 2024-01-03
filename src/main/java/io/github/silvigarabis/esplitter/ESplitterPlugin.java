@@ -85,6 +85,7 @@ public final class ESplitterPlugin extends JavaPlugin {
         saveDefaultConfig();
 
         ConfigurationSection config;
+        /*
         try {
             super.reloadConfig();
             config = getConfig();
@@ -93,6 +94,9 @@ public final class ESplitterPlugin extends JavaPlugin {
             ex.printStackTrace();
             config = null;
         }
+        */
+        super.reloadConfig();
+        config = getConfig();
         
         this.config = null;
         if (ESplitterConfig.verifyConfig(config)){

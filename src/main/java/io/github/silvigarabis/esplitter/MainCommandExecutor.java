@@ -126,7 +126,12 @@ public class MainCommandExecutor implements CommandExecutor {
     }
     
     private void helpCmd(CommandSender sender, String label, String[] args){
-        sender.sendMessage("用法：/" + label + " [gui|help|reload|debug]");
+        if (! "esgui".equals(label)){
+            sender.sendMessage("用法：/" + label + " [gui|help|reload|debug]");
+            sender.sendMessage("用法：/esgui [player]");
+        } else {
+            sender.sendMessage("用法：/" + label + " [player]");
+        }
     }
     
     private void openGuiCmd(CommandSender sender, String label, String[] args){
