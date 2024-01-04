@@ -45,20 +45,20 @@ public class ESplitterGui {
     //  构建gui使用的基础物品
     ////////////////////////
     //外围物品
-    public static final ItemStack borderItem = new ItemStack(Material.BLACK_STAINED_GLASS_PANE); 
+    public static final ItemStack borderItem = createTextItem(Material.BLACK_STAINED_GLASS_PANE); 
     
     //包围物品
-    public static final ItemStack centerItem = new ItemStack(Material.GRAY_STAINED_GLASS_PANE); 
+    public static final ItemStack centerItem = createTextItem(Material.GRAY_STAINED_GLASS_PANE); 
     
     //分隔线
-    public static final ItemStack lineItem = new ItemStack(Material.WHITE_STAINED_GLASS_PANE);
+    public static final ItemStack lineItem = createTextItem(Material.WHITE_STAINED_GLASS_PANE);
     
-    public static final ItemStack noticeItem = new ItemStack(Material.OAK_SIGN);
+    public static final ItemStack noticeItem = createTextItem(Material.OAK_SIGN);
     
-    public static final ItemStack pageUpItem = new ItemStack(Material.GLASS);
-    public static final ItemStack pageDownItem = new ItemStack(Material.STONE);
+    public static final ItemStack pageUpItem = createTextItem(Material.GLASS);
+    public static final ItemStack pageDownItem = createTextItem(Material.STONE);
 
-    public static final ItemStack itemAcceptableStatusItem = new ItemStack(Material.GREEN_STAINED_GLASS_PANE);
+    public static final ItemStack itemAcceptableStatusItem = createTextItem(Material.GREEN_STAINED_GLASS_PANE);
 
     ///////////////////////////
     //构建gui使用的槽位索引
