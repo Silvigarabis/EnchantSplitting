@@ -581,9 +581,9 @@ public class ESplitterGui {
     }
     public static ItemStack createTextItem(ItemStack item, List<String> textList){
         String titleText;
-        try {
+        if (textList.size() > 0){
             titleText = textList.get(0);
-        } catch(java.lang.IndexOutOfBoundsException ignored){
+        } else {
             titleText = "";
         }
         List<String> contentList = null;
