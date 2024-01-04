@@ -81,7 +81,16 @@ public class Messages {
     public static String getMessageString(MessageKey messageKey){
         return messages.contains(messageKey) ? messages.get(messageKey) : messageKey.getMessageKey();
     }
-    public static void send(CommandSender sender, MessageKey key, String... replacements){
+    
+    public static void send(CommandSender sender, MessageKey key, String replacement, String... replacements){
+       String[] fullReplacements = new String[replacements.length + 1];
+       fullReplacements[0] = replacement;
+       for (int idx = 1; idx <= replacements.length; idx++){
+          fullReplacements[idx] = replacements[idx - 1];
+       }
+       send(sender, key, fullReplacements);
+    }
+    public static void send(CommandSender sender, MessageKey key, String[] replacements){
         var messageString = getMessageString(key);
         for (var replacement : replacements){
             messageString = messageString.replaceFirst("\\{\\}", replacement);
@@ -97,8 +106,12 @@ public class Messages {
         message = message.replaceAll("&&", "&");
         sender.sendMessage(message);
     }
+    
     public static void sendConsole(MessageKey key, String[] replacements){
         send(Bukkit.getConsoleSender(), key, replacements);
+    }
+    public static void sendConsole(MessageKey key, String replacement, String... replacements){
+        send(Bukkit.getConsoleSender(), replacement, replacements);
     }
     public static void sendConsole(MessageKey key){
         send(Bukkit.getConsoleSender(), key);
