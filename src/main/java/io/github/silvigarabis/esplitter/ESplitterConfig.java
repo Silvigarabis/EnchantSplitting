@@ -36,7 +36,7 @@ public class ESplitterConfig {
     }
     
     public static boolean isConfigured(){
-        return config != null && EsplitterPlugin.getPlugin() != null;
+        return config != null && ESplitterPlugin.getPlugin() != null;
     }
 
     public static boolean loadConfig(File configFile){
@@ -62,6 +62,6 @@ public class ESplitterConfig {
     }
 
     private ESplitterConfig(){
-        throw RuntimeException("no constructor");
+        throw new RuntimeException("no constructor");
     }
 }
