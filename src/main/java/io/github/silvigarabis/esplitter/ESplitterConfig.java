@@ -20,6 +20,7 @@ import java.util.Objects;
 
 /**
  * 用于验证配置是否正确，以及存储正确的配置的类。
+ * 暂时没有起到任何作用，因为我不会java
  */
 public class ESplitterConfig {
     public static final String SPLIT_NEED_EMPTY_BOOK = "split-enchant.need-empty-book";

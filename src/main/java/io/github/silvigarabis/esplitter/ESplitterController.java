@@ -68,6 +68,17 @@ public final class ESplitterController {
         return this.enchantments.get(ench);
     }
 
+    public static boolean isItemAcceptable(ItemStack item){
+        //附魔书暂时不支持（软限制）
+        return !item.getType().equals(ENCHANTED_BOOK)){
+    }
+
+    public boolean isItemAcceptable(){
+        return itemAccepted;
+    }
+    
+    private boolean itemAccepted = false;
+
     public void selectItem(ItemStack item){
         this.selectedItem = item;
         this.gui.setSelectedItem(item);
@@ -76,14 +87,14 @@ public final class ESplitterController {
             return;
         }
         
-        //附魔书暂时不支持（软限制）
-        if (item.getType().equals(ENCHANTED_BOOK)){
-            this.enchantments = new HashMap();
-
-        } else {
+        if (isItemAcceptable(item)){
+            itemAccepted = true;
             //之前没想到这里返回的是 com.google.common.collect.ImmutableMap
             //用一个HashMap改一下
             this.enchantments = new HashMap(item.getEnchantments());
+        } else {
+            itemAccepted = false;
+            this.enchantments = new HashMap();
         }
 
         this.divideEnchantmentSet();

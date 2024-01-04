@@ -58,6 +58,8 @@ public class ESplitterGui {
     public static final ItemStack pageUpItem = new ItemStack(Material.GLASS);
     public static final ItemStack pageDownItem = new ItemStack(Material.STONE);
 
+    public static final ItemStack itemAcceptableStatusItem = new ItemStack(Material.GREEN_STAINED_GLASS_PANE);
+
     ///////////////////////////
     //构建gui使用的槽位索引
     //////////////////////////
@@ -73,11 +75,19 @@ public class ESplitterGui {
     
     //中心物品位置
     public static final int[] elementIndexes = {
+           20,   22,   24,   
+                             
+           38,   40,   42
+                            
+    };
+    /*
+    public static final int[] elementIndexes = {
         19,20,21,22,23,24,25,
         28,29,30,31,32,33,34,
         37,38,39,40,41,42,43,
         46,47,48,49,50,51,52
-    }; 
+    };
+    */
     
     //分隔线
     public static final int[] upperIndexes = {
@@ -87,6 +97,8 @@ public class ESplitterGui {
     //显示物品的位置
     public static final int selectedItemIndex = 1;
     
+    public static final int itemAcceptableStatusIndex = 2;
+
     //如果有需要提醒的时候，显示提醒物品的位置
     public static final int notificationItemIndex = 7;
 
@@ -105,8 +117,8 @@ public class ESplitterGui {
         
         buildBorder();
         buildLine();
+
         buildMiscButton();
-        switchOperationMode(operationMode);
     }
     
     public void buildBorder(){
@@ -124,13 +136,120 @@ public class ESplitterGui {
     }
     
     public void buildMiscButton(){
+        itemStakcs.put(itemAcceptableStatusIndex, itemAcceptableStatusItem);
         itemStacks.put(pageDownIndex, pageDownItem);
         itemStacks.put(pageUpIndex, pageUpItem);
         itemStacks.put(notificationItemIndex, noticeItem);
         
+        updateOperationModeStatus();
+        updateItemAcceptableStatus();
         update();
     }
-    
+
+    private void updateOperationModeStatus(){
+        ItemStack noticeItem;
+        if (operationMode == OperationMode.SPLIT){
+            noticeItem = createTextItem(
+                Material.ENCHANTING_TABLE,
+                "当前模式: 分离模式",
+                "点击附魔项目以分离"
+            );
+        } else if (operationMode == OperationMode.GRIND){
+            noticeItem = createTextItem(
+                Material.GRINDSTONE,
+                "当前模式: 去魔模式",
+                "点击附魔项目以移除"
+            );
+        }
+
+        itemStacks.put(notificationItemIndex, noticeItem);
+    }
+    private void updateItemAcceptableStatus(){
+        ItemStack item;
+        
+        if (this.selectedItem == null){
+            item = createTextItem(
+                Material.YELLOW_STAINED_GLASS_PANE,
+                "在左侧放入物品以分析附魔"
+            );
+        } else if (this.ctrl.isItemAcceptable()){
+            item = createTextItem(
+                Material.GREEN_STAINED_GLASS_PANE,
+                "已完成附魔分析",
+                "检测到以下" + this.ctrl.enchantSetList.size() + "组附魔"
+            );
+        } else {
+            item = createTextItem(
+                Material.RED_STAINED_GLASS_PANE,
+                "无法为此物品进行附魔分析"
+            );
+        }
+        itemStakcs.put(itemAcceptableStatusIndex, item);
+    }
+    private void updatePageStatus(){
+        ItemStack pageUpItem;
+        ItemStack pageDownItem;
+        int lastPageNumberText = this.curPageIndex;
+        int curPageNumberText = this.curPageIndex + 1;
+        int nextPageNumberText = this.curPageIndex + 2;
+        int startPageNumberText = 1;
+        int endPageNumberText = this.curPageIndex.size();
+
+        String curPageText = "当前处于第" + curPageNumberText + "页，共" + endPageNumberText + "页";
+        String lastPageText = "上一页，第" + lastPageNumberText + "页";
+        String nextPageText = "下一页，第" + nextPageNumberText + "页";
+        String backToFirstPageText = "返回第" + startPageNumberText + "页";
+        String backToLastPageText = "返回第" + endPageNumberText + "页";
+
+        if (this.pages.size() <= 1){
+            pageUpItem = createTextItem(
+                ESplitterGui.pageUpItem,
+                "无上一页",
+                curPageText
+            );
+            pageDownItem = createTextItem(
+                ESplitterGui.pageDownItem,
+                "无下一页",
+                curPageText
+            );
+        } else if (this.curPageIndex == 0){
+            pageUpItem = createTextItem(
+                ESplitterGui.pageUpItem,
+                backToLastPageText,
+                curPageText
+            );
+            pageDownItem = createTextItem(
+                ESplitterGui.pageDownItem,
+                nextPageText,
+                curPageText
+            );
+        } else if (this.curPageIndex == this.pages.size() - 1){
+            pageUpItem = createTextItem(
+                ESplitterGui.pageUpItem,
+                lastPageText,
+                curPageText
+            );
+            pageDownItem = createTextItem(
+                ESplitterGui.pageDownItem,
+                backToFirstPageText,
+                curPageText
+            );
+        } else {
+            pageUpItem = createTextItem(
+                ESplitterGui.pageUpItem,
+                lastPageText,
+                curPageText
+            );
+            pageDownItem = createTextItem(
+                ESplitterGui.pageDownItem,
+                nextPageText,
+                curPageText
+            );
+        }
+        itemStacks.put(pageDownIndex, pageDownItem);
+        itemStacks.put(pageUpIndex, pageUpItem);
+    }
+
     public void clearElements(){
         for (int idx : elementIndexes){
             if (itemStacks.containsKey(idx))
@@ -168,6 +287,7 @@ public class ESplitterGui {
         }
         
         this.curPageIndex = pageIndex;
+        buildMiscButton();
         update();
     }
     
@@ -305,38 +425,15 @@ public class ESplitterGui {
 
     private void switchOperationMode(){
         if (operationMode == OperationMode.SPLIT){
-            operationMode = OperationMode.GRIND;
+            switchOperationMode(OperationMode.GRIND);
         } else if (operationMode == OperationMode.GRIND){
-            operationMode = OperationMode.SPLIT;
+            switchOperationMode(OperationMode.SPLIT);
         }
-        
-        switchOperationMode(operationMode);
     }
 
     private void switchOperationMode(OperationMode mode){
-        var item = noticeItem.clone();
-        
-        var meta = item.getItemMeta();
-        
-        List<String> lore = new ArrayList<>();
-        if (operationMode == OperationMode.SPLIT){
-            lore.add("当前模式: 分离模式");
-            lore.add("点击附魔项目以分离");
-        } else if (operationMode == OperationMode.GRIND){
-            lore.add("当前模式: 去魔模式");
-            lore.add("点击附魔项目以移除");
-        } else {
-            //以目前的逻辑来说不会有，但是我加一个也没关系吧
-            lore.add("错误: 未知的模式，你做了什么？");
-        }
-
-        meta.setLore(lore);
-        
-        item.setItemMeta(meta);
-        
-        itemStacks.put(notificationItemIndex, item);
-
-        update();
+        operationMode = mode;
+        buildMiscButton();
     }
 
     /**
@@ -478,4 +575,44 @@ public class ESplitterGui {
             event.setCancelled(true);
     }
 
+    public static ItemStack createTextItem(ItemStack item, String... texts){
+        return createTextItem(item, texts);
+    }
+    public static ItemStack createTextItem(ItemStack item, String[] texts){
+        List<String> textList = new ArrayList<>();
+        for (var text : texts){
+            textList.add(text);
+        }
+        createTextItem(item, textList);
+    }
+    public static ItemStack createTextItem(ItemStack item, List<String> textList){
+        String titleText;
+        try {
+            titleText = textList.get(0);
+        } catch(java.lang.IndexOutOfBoundsException ignored){
+            titleText = "";
+        }
+        List<String> contentList = null;
+        if (textList.size() > 1){
+            contentList = textList.subList(1, textList.size());
+        }
+        item = item.clone();
+        var meta = item.getItemMeta();
+        meta.setDisplayName(titleText);
+        meta.setLore(textList);
+        item.setItemMeta(meta);
+        return item;
+    }
+    public static ItemStack createTextItem(Material material, String[] texts){
+        var item = new ItemStack(material);
+        return createTextItem(item, texts);
+    }
+    public static ItemStack createTextItem(Material material, String... texts){
+        var item = new ItemStack(material);
+        return createTextItem(item, texts);
+    }
+    public static ItemStack createTextItem(Material material, List<String> textList){
+        var item = new ItemStack(material);
+        return createTextItem(item, textList);
+    }
 }
