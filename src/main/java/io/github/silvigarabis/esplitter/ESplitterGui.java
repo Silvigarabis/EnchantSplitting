@@ -45,20 +45,20 @@ public class ESplitterGui {
     //  构建gui使用的基础物品
     ////////////////////////
     //外围物品
-    public static final ItemStack borderItem = createTextItem(Material.BLACK_STAINED_GLASS_PANE); 
+    public static final ItemStack borderItem = createTextItem(Material.BLACK_STAINED_GLASS_PANE, "");
     
     //包围物品
-    public static final ItemStack centerItem = createTextItem(Material.GRAY_STAINED_GLASS_PANE); 
+    public static final ItemStack centerItem = createTextItem(Material.GRAY_STAINED_GLASS_PANE, "");
     
     //分隔线
-    public static final ItemStack lineItem = createTextItem(Material.WHITE_STAINED_GLASS_PANE);
+    public static final ItemStack lineItem = createTextItem(Material.WHITE_STAINED_GLASS_PANE, "");
     
-    public static final ItemStack noticeItem = createTextItem(Material.OAK_SIGN);
+    public static final ItemStack noticeItem = createTextItem(Material.OAK_SIGN, "");
     
-    public static final ItemStack pageUpItem = createTextItem(Material.GLASS);
-    public static final ItemStack pageDownItem = createTextItem(Material.STONE);
+    public static final ItemStack pageUpItem = createTextItem(Material.GLASS, "");
+    public static final ItemStack pageDownItem = createTextItem(Material.STONE, "");
 
-    public static final ItemStack itemAcceptableStatusItem = createTextItem(Material.GREEN_STAINED_GLASS_PANE);
+    public static final ItemStack itemAcceptableStatusItem = createTextItem(Material.GREEN_STAINED_GLASS_PANE, "");
 
     ///////////////////////////
     //构建gui使用的槽位索引
@@ -584,11 +584,11 @@ public class ESplitterGui {
         return createTextItem(item, textList);
     }
     public static ItemStack createTextItem(ItemStack item, List<String> textList){
-        String titleText;
+        String titleText = "";
         if (textList.size() > 0){
             titleText = textList.get(0);
         } else {
-            titleText = "";
+            titleText = null;
         }
         List<String> contentList = null;
         if (textList.size() > 1){
