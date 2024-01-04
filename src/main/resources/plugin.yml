@@ -15,11 +15,17 @@ permissions:
     description: Be able to reload config
     default: op
   esplitter.debug:
-    description: enable debug output
+    description: Set debug output enable
     default: op
   esplitter.command:
     description: Can use ${project.name}
     default: true
+  esplitter.gui:
+    description: Can open esplitter gui
+    default: true
+  esplitter.gui.others:
+    description: Can open esplitter gui for other player
+    default: op
   esplitter.help:
     description: can get help message about ${project.name}
     default: true
