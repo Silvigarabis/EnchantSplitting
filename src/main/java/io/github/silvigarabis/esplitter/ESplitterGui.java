@@ -577,7 +577,11 @@ public class ESplitterGui {
     }
 
     public static ItemStack createTextItem(ItemStack item, String... texts){
-        return createTextItem(item, texts);
+        List<String> textList = new ArrayList<>();
+        for (var text : texts){
+            textList.add(text);
+        }
+        createTextItem(item, textList);
     }
     public static ItemStack createTextItem(ItemStack item, List<String> textList){
         String titleText;
