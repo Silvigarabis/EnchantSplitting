@@ -400,7 +400,8 @@ public class ESplitterGui {
           || action == InventoryAction.PICKUP_SOME
           || action == InventoryAction.DROP_ONE_SLOT
           || action == InventoryAction.DROP_ALL_SLOT
-          || action == InventoryAction.MOVE_TO_OTHER_INVENTORY;
+          || action == InventoryAction.MOVE_TO_OTHER_INVENTORY
+          || action == InventoryAction.SWAP_WITH_CURSOR;
     }
     
     public static boolean isPlaceInAction(InventoryAction action){
