@@ -84,6 +84,8 @@ public final class ESplitterPlugin extends JavaPlugin {
     
     @Override
     public void reloadConfig(){
+        logger.info("正在加载配置文件");
+
         saveDefaultConfig();
         super.reloadConfig();
         ESplitterConfig.cleanConfig();
@@ -94,6 +96,17 @@ public final class ESplitterPlugin extends JavaPlugin {
         } else {
             logger.warning("插件配置有误，请检查配置文件是否正确。");
             logger.warning("在确认无误后，可以使用/esplitter reload重新加载");
+        }
+        
+        logger.info("正在加载聊天消息");
+        saveResource("message.yml", false);
+        var messageConfigFile = new File(getDataDir().getPath(), "message.yml");
+        Messages.cleanMessageConfig();
+        Messages.loadMessageConfig(messageConfigFile);
+        if (Messages.countMissingMessage() == 0){
+            logger.info("聊天消息已加载成功！");
+        } else {
+            logger.warning("缺少" + Messages.countMissingMessage() + "聊天消息");
         }
     }
 }

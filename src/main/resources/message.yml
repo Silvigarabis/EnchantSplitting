@@ -1,0 +1,34 @@
+chat-prefix: "[ESplitter]"
+invalid-plugin-config: ""
+
+gui:
+   title:
+   unexpected-error:
+
+command-no-permission: "&c没有使用权限" 
+command-unknown: "&e未知的命令"
+
+command-help:
+   general: |-
+      用法：/{} [gui|help|reload|debug]
+      用法：/esgui [player]
+   esgui: |-
+      用法：/{} [player]
+
+command-gui:
+   no-permission: "没有权限打开GUI"
+   no-permission-for-others: "没有权限为其他玩家打开GUI"
+   other-player-not-found: "错误！未找到玩家 {}"
+   player-only: "仅玩家可用"
+
+command-reload:
+   no-permission: "没有权限重载插件"
+   processing-reload: "重新载入配置文件中"
+   success: "已成功加载配置文件！"
+   fail: "载入配置文件失败！请检查服务器控制台日志"
+   
+command-debug:
+   no-permission: "没有权限使用此功能"
+   debug-enable: "Debug 模式被设置为 true"
+   debug-disable: "Debug 模式被设置为 false"
+   debug-status: "Debug 模式: {}"

@@ -15,6 +15,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.Bukkit;
+import io.github.silvigarabis.esplitter.Messages.MessageKeys;
 
 import java.util.logging.Logger;
 
@@ -24,16 +25,14 @@ public class MainCommandExecutor implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         ESplitterPlugin.getPlugin().getLogger().info("正在处理指令……");
         if (!ESplitterPlugin.isConfigured()){
-            sender.sendMessage("警告！插件配置错误！");
-            sender.sendMessage("查看控制台日志以获得详情");
-            
+            Messages.send(sender, MessageKeys.INVALID_PLUGIN_CONFIG);
             ESplitterPlugin.getPlugin().getLogger().warning("插件的配置文件没有正确配置");
             ESplitterPlugin.getPlugin().getLogger().warning("这可能是因为其中含有语法错误，或者缺失了必要的配置");
             ESplitterPlugin.getPlugin().getLogger().warning("尝试修正配置，并在这之后使用 /esplitter reload 重新载入配置文件");
         }
     
         if (!Permissions.MAIN_COMMAND.check(sender)){
-            sender.sendMessage("没有使用权限");
+            Messages.send(sender, MessageKeys.COMMAND_NO_PERMISSION);
             return true;
         }
         
@@ -64,7 +63,7 @@ public class MainCommandExecutor implements CommandExecutor {
                 helpCmd(sender, label, args);
                 break;
             default:
-                sender.sendMessage("未知的命令格式");
+                Messages.send(sender, MessageKeys.COMMAND_UNKNOWN);
                 helpCmd(sender, label, args);
                 break;
         }
@@ -82,71 +81,76 @@ public class MainCommandExecutor implements CommandExecutor {
 
     private void guiCmd(CommandSender sender, String label, String[] args){
         if (!ESplitterPlugin.isConfigured()){
-            sender.sendMessage("插件配置错误！");
+            Messages.send(sender, MessageKeys.INVALID_PLUGIN_CONFIG);
             return;
         }
         if (!Permissions.COMMAND_GUI.check(sender)){
-            sender.sendMessage("没有权限打开GUI");
+            Messages.send(sender, MessageKeys.COMMAND_GUI_NO_PERMISSION);
             return;
         }
 
         if (args.length == 2){
             var player = getPlayer(args[1]);
             if (!sender.equals(player) && !Permissions.COMMAND_GUI_OTHERS.check(sender)){
-                sender.sendMessage("没有权限为其他玩家打开GUI");
+                Messages.send(sender, MessageKeys.COMMAND_GUI_NO_PERMISSION_FOR_OTHERS);
                 return;
             }
             if (player != null){
                 openGui(player);
             } else {
-                sender.sendMessage("错误！未找到玩家");
+                Messages.send(sender, MessageKeys.COMMAND_GUI_OTHER_PLAYER_NOTFOUND, args[1]);
             }
         } else {
             if (sender instanceof Player){
                 openGui((Player)sender);
             } else {
-                sender.sendMessage("仅玩家可用");
+                Messages.send(sender, MessageKeys.COMMAND_GUI_PLAYER_ONLY);
             }
         }
     }
     
     private void debugCmd(CommandSender sender, String label, String[] args){
         if (!Permissions.COMMAND_DEBUG.check(sender)){
-            sender.sendMessage("没有使用权限");
+            Messages.send(sender, MessageKeys.COMMAND_DEBUG_NO_PERMISSION);
             return;
         }
         if (args.length == 2){
             boolean mode = "true".equals(args[1]);
             ESplitterPlugin.getPlugin().setDebugMode(mode);
-            sender.sendMessage("Debug 模式被设置为 " + mode);
+            Messages.send(sender,
+                MessageKeys.COMMAND_DEBUG_STATUS,
+                "" + ESplitterPlugin.getPlugin().isDebugMode()
+            );
         } else {
-            sender.sendMessage("Debug 模式:" + ESplitterPlugin.getPlugin().isDebugMode());
+            Messages.send(sender,
+                MessageKeys.COMMAND_DEBUG_STATUS,
+                "" + ESplitterPlugin.getPlugin().isDebugMode()
+            );
         }
     }
 
     private void reloadCmd(CommandSender sender, String label, String[] args){
         if (!Permissions.COMMAND_RELOAD.check(sender)){
-            sender.sendMessage("没有使用权限");
+            Messages.send(sender, MessageKeys.COMMAND_RELOAD_NO_PERMISSION);
             return;
         }
         
-        sender.sendMessage("重新载入配置文件中");
+        Messages.send(sender, MessageKeys.COMMAND_RELOAD_PROCESSING);
 
         ESplitterPlugin.getPlugin().reloadConfig();
         
         if (ESplitterPlugin.isConfigured()){
-            sender.sendMessage("已成功加载配置文件！");
+            Messages.send(sender, MessageKeys.COMMAND_RELOAD_SUCCESS);
         } else {
-            sender.sendMessage("载入配置文件失败！请检查服务器控制台日志");
+            Messages.send(sender, MessageKeys.COMMAND_RELOAD_FAIL);
         }
     }
     
     private void helpCmd(CommandSender sender, String label, String[] args){
-        if (! "esgui".equals(label)){
-            sender.sendMessage("用法：/" + label + " [gui|help|reload|debug]");
-            sender.sendMessage("用法：/esgui [player]");
+        if ("esgui".equals(label)){
+            Messages.send(sender, MessageKeys.COMMAND_HELP_ESGUI, label);
         } else {
-            sender.sendMessage("用法：/" + label + " [player]");
+            Messages.send(sender, MessageKeys.COMMAND_HELP_GENERAL, label);
         }
     }
     
