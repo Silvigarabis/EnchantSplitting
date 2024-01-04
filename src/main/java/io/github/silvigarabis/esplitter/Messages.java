@@ -12,10 +12,10 @@ import java.util.EnumMap;
 public class Messages {
     public enum MessageKey {
         COMMAND_NO_PERMISSION("command-no-permission"),
-        COMMAND_UNKNOWN_COMMAND("command-unknown"),
+        COMMAND_UNKNOWN("command-unknown"),
 
         COMMAND_GUI_NO_PERMISSION("command-gui.no-permission"),
-        COMMAND_GUI_NO_PERMISSION_OTHERS("command-gui.no-permission-for-others"),
+        COMMAND_GUI_NO_PERMISSION_FOR_OTHERS("command-gui.no-permission-for-others"),
         COMMAND_GUI_OTHER_PLAYER_NOTFOUND("command-gui.other-player-not-found"),
         COMMAND_GUI_PLAYER_ONLY("command-gui.player-only"),
 
@@ -57,7 +57,7 @@ public class Messages {
         }
     }
 
-    private static Map<MessageKey, String> messages = new EnumMap<>();
+    private static Map<MessageKey, String> messages = new EnumMap<MessageKey, String>();
     public static int countMissingMessage(){
         return MessageKey.values().length - messages.size();
     }
@@ -65,7 +65,7 @@ public class Messages {
         messages.clear();
     }
     public static void loadMessageConfig(ConfigurationSection messageConfig){
-        for (var messageKey : MessageKey.values()){
+        for (MessageKey messageKey : MessageKey.values()){
             var key = messageKey.getMessageKey();
             var messageString = messageConfig.get(key);
             if (messageString == null){
@@ -81,7 +81,7 @@ public class Messages {
     public static String getMessageString(MessageKey messageKey){
         return messages.contains(messageKey) ? messages.get(messageKey) : messageKey.getMessageKey();
     }
-    public static void send(CommandSender sender, MessageKey key, String[] replacements){
+    public static void send(CommandSender sender, MessageKey key, String... replacements){
         var messageString = getMessageString(key);
         for (var replacement : replacements){
             messageString = messageString.replaceFirst("\\{\\}", replacement);
@@ -92,7 +92,7 @@ public class Messages {
         send(sender, getMessageString(key));
     }
     public static void send(CommandSender sender, String message){
-        message = getMessageString(CHAT_PREFIX) + " " + message;
+        message = getMessageString(MessageKey.CHAT_PREFIX) + " " + message;
         message = message.replaceAll("&([0-9a-fmnol])", "§$1");
         message = message.replaceAll("&&", "&");
         sender.sendMessage(message);
