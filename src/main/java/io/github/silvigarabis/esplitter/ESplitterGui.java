@@ -136,7 +136,7 @@ public class ESplitterGui {
     }
     
     public void buildMiscButton(){
-        itemStakcs.put(itemAcceptableStatusIndex, itemAcceptableStatusItem);
+        itemStacks.put(itemAcceptableStatusIndex, itemAcceptableStatusItem);
         itemStacks.put(pageDownIndex, pageDownItem);
         itemStacks.put(pageUpIndex, pageUpItem);
         itemStacks.put(notificationItemIndex, noticeItem);
@@ -167,7 +167,7 @@ public class ESplitterGui {
     private void updateItemAcceptableStatus(){
         ItemStack item;
         
-        if (this.selectedItem == null){
+        if (this.ctrl.selectedItem == null){
             item = createTextItem(
                 Material.YELLOW_STAINED_GLASS_PANE,
                 "在左侧放入物品以分析附魔"
@@ -184,7 +184,7 @@ public class ESplitterGui {
                 "无法为此物品进行附魔分析"
             );
         }
-        itemStakcs.put(itemAcceptableStatusIndex, item);
+        itemStacks.put(itemAcceptableStatusIndex, item);
     }
     private void updatePageStatus(){
         ItemStack pageUpItem;
@@ -193,7 +193,7 @@ public class ESplitterGui {
         int curPageNumberText = this.curPageIndex + 1;
         int nextPageNumberText = this.curPageIndex + 2;
         int startPageNumberText = 1;
-        int endPageNumberText = this.curPageIndex.size();
+        int endPageNumberText = this.pages.size();
 
         String curPageText = "当前处于第" + curPageNumberText + "页，共" + endPageNumberText + "页";
         String lastPageText = "上一页，第" + lastPageNumberText + "页";
@@ -345,7 +345,6 @@ public class ESplitterGui {
     public void setSelectedItem(ItemStack item){
         this.itemStacks.put(selectedItemIndex, item != null ? item.clone() : null);
         this.update();
-        
     }
     
     private Map<Enchantment, Integer> enchantments;
