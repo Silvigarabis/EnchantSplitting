@@ -578,13 +578,6 @@ public class ESplitterGui {
     public static ItemStack createTextItem(ItemStack item, String... texts){
         return createTextItem(item, texts);
     }
-    public static ItemStack createTextItem(ItemStack item, String[] texts){
-        List<String> textList = new ArrayList<>();
-        for (var text : texts){
-            textList.add(text);
-        }
-        createTextItem(item, textList);
-    }
     public static ItemStack createTextItem(ItemStack item, List<String> textList){
         String titleText;
         try {
@@ -602,10 +595,6 @@ public class ESplitterGui {
         meta.setLore(textList);
         item.setItemMeta(meta);
         return item;
-    }
-    public static ItemStack createTextItem(Material material, String[] texts){
-        var item = new ItemStack(material);
-        return createTextItem(item, texts);
     }
     public static ItemStack createTextItem(Material material, String... texts){
         var item = new ItemStack(material);
