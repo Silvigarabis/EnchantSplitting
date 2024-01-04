@@ -32,7 +32,9 @@ public class ESplitterConfig {
     }
 
     private static boolean verifyConfig(ConfigurationSection config){
-        return config != null;
+        return config != null
+        && config.isBoolean(SPLIT_NEED_EMPTY_BOOK)
+        && config.isInt(CONFIG_VERSION);
     }
     
     public static boolean isConfigured(){
