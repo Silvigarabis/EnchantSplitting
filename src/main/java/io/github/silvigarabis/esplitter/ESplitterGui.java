@@ -143,6 +143,7 @@ public class ESplitterGui {
         
         updateOperationModeStatus();
         updateItemAcceptableStatus();
+        updatePageStatus();
         update();
     }
 
