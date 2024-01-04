@@ -70,7 +70,7 @@ public final class ESplitterController {
 
     public static boolean isItemAcceptable(ItemStack item){
         //附魔书暂时不支持（软限制）
-        return !item.getType().equals(ENCHANTED_BOOK)){
+        return !item.getType().equals(ENCHANTED_BOOK);
     }
 
     public boolean isItemAcceptable(){
