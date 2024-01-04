@@ -23,7 +23,6 @@ public class MainCommandExecutor implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         ESplitterPlugin.getPlugin().getLogger().info("正在处理指令……");
-
         if (!ESplitterPlugin.isConfigured()){
             sender.sendMessage("警告！插件配置错误！");
             sender.sendMessage("查看控制台日志以获得详情");
@@ -33,7 +32,7 @@ public class MainCommandExecutor implements CommandExecutor {
             ESplitterPlugin.getPlugin().getLogger().warning("尝试修正配置，并在这之后使用 /esplitter reload 重新载入配置文件");
         }
     
-        if (!sender.hasPermission("esplitter.command")){
+        if (!Permissions.MAIN_COMMAND.check(sender)){
             sender.sendMessage("没有使用权限");
             return true;
         }
@@ -75,7 +74,7 @@ public class MainCommandExecutor implements CommandExecutor {
     
     private static Player getPlayer(String playerName){
         for (Player player : Bukkit.getOnlinePlayers()){
-            if (player.getName().equals(playerName))
+            if (player.getName().equalsIgnoreCase(playerName))
                 return player;
         }
         return null;
@@ -86,9 +85,17 @@ public class MainCommandExecutor implements CommandExecutor {
             sender.sendMessage("插件配置错误！");
             return;
         }
+        if (!Permissions.COMMAND_GUI.check(sender)){
+            sender.sendMessage("没有权限打开GUI");
+            return;
+        }
 
         if (args.length == 2){
             var player = getPlayer(args[1]);
+            if (!sender.equals(player) && !Permissions.COMMAND_GUI_OTHERS.check(sender)){
+                sender.sendMessage("没有权限为其他玩家打开GUI");
+                return;
+            }
             if (player != null){
                 openGui(player);
             } else {
@@ -104,7 +111,7 @@ public class MainCommandExecutor implements CommandExecutor {
     }
     
     private void debugCmd(CommandSender sender, String label, String[] args){
-        if (!sender.hasPermission("esplitter.debug")){
+        if (!Permissions.COMMAND_DEBUG.check(sender)){
             sender.sendMessage("没有使用权限");
             return;
         }
@@ -118,7 +125,7 @@ public class MainCommandExecutor implements CommandExecutor {
     }
 
     private void reloadCmd(CommandSender sender, String label, String[] args){
-        if (!sender.hasPermission("esplitter.reload")){
+        if (!Permissions.COMMAND_RELOAD.check(sender)){
             sender.sendMessage("没有使用权限");
             return;
         }
@@ -144,25 +151,12 @@ public class MainCommandExecutor implements CommandExecutor {
     }
     
     private void openGuiCmd(CommandSender sender, String label, String[] args){
-        if (!ESplitterPlugin.isConfigured()){
-            sender.sendMessage("插件配置错误！");
-            return;
+        String[] fullArgs = new String[args.length + 1];
+        fullArgs[0] = "gui";
+        for (int idx = 1; idx <= args.length; idx ++){
+            fullArgs[idx] = args[idx - 1];
         }
-
-        if (args.length == 1){
-            var player = getPlayer(args[0]);
-            if (player != null){
-                openGui(player);
-            } else {
-                sender.sendMessage("错误！未找到玩家");
-            }
-        } else {
-            if (sender instanceof Player){
-                openGui((Player)sender);
-            } else {
-                sender.sendMessage("仅玩家可用");
-            }
-        }
+        guiCmd(sender, label, fullArgs);
     }
     
     private void openGui(Player player){
