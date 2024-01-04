@@ -34,17 +34,17 @@ public final class ESplitterController {
     
     //private WeakHashMap<Player, ESplitterController> controllers = new WeakMap();
     
-    protected Player player;
+    protected Player player = null;
     
     protected List<String> notifications = new ArrayList();
     
-    protected ItemStack selectedItem;
+    protected ItemStack selectedItem = null;
     
-    protected Map<Enchantment, Integer> enchantments;
+    protected Map<Enchantment, Integer> enchantments = null;
     
-    protected List<EnchantmentSet> enchantSetList;
+    protected List<EnchantmentSet> enchantSetList = null;
 
-    private ESplitterGui gui;
+    private ESplitterGui gui = null;
     
     public ESplitterController(Player player){
         if (!ESplitterPlugin.isConfigured()){

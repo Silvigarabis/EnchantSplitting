@@ -117,8 +117,6 @@ public class ESplitterGui {
         
         buildBorder();
         buildLine();
-
-        buildMiscButton();
     }
     
     public void buildBorder(){
@@ -347,6 +345,7 @@ public class ESplitterGui {
     
     public void setSelectedItem(ItemStack item){
         this.itemStacks.put(selectedItemIndex, item != null ? item.clone() : null);
+        buildMiscButton();
         this.update();
     }
     
@@ -585,11 +584,12 @@ public class ESplitterGui {
         return createTextItem(item, textList);
     }
     public static ItemStack createTextItem(ItemStack item, List<String> textList){
-        String titleText = "";
+        String titleText = null;
         if (textList.size() > 0){
             titleText = textList.get(0);
-        } else {
-            titleText = null;
+        }
+        if (titleText != null){
+            titleText = "§r§f" + titleText;
         }
         List<String> contentList = null;
         if (textList.size() > 1){
