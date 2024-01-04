@@ -160,6 +160,8 @@ public class ESplitterGui {
                 "当前模式: 去魔模式",
                 "点击附魔项目以移除"
             );
+        } else {
+            throw new RuntimeException("未知的模式");
         }
 
         itemStacks.put(notificationItemIndex, noticeItem);
