@@ -44,7 +44,7 @@ public final class ESplitterPlugin extends JavaPlugin {
         return config;
     }
     public static boolean isConfigured(){
-        return plugin != null && plugin.getPlugin().config != null;
+        return ESplitterConfig.isConfigured();
     }
 
     private Logger logger;
