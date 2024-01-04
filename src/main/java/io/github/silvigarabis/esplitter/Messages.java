@@ -42,7 +42,7 @@ public class Messages {
         public String getMessageKey(){
             return messageKey;
         }
-        private MessageKeys(String messageKey){
+        private MessageKey(String messageKey){
             this.messageKey = messageKey;
         }
         public void send(CommandSender sender){
@@ -90,7 +90,7 @@ public class Messages {
     public static void send(CommandSender sender, MessageKeys key){
         send(sender, getMessageString(key));
     }
-    public static void send(CommandSender, sender, String message){
+    public static void send(CommandSender sender, String message){
         message = getMessageString(CHAT_PREFIX) + " " + message;
         message = message.replaceAll("&([0-9a-fmnol])", "§$1");
         message = message.replaceAll("&&", "&");
