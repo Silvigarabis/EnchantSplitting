@@ -600,7 +600,7 @@ public class ESplitterGui {
         item = item.clone();
         var meta = item.getItemMeta();
         meta.setDisplayName(titleText);
-        meta.setLore(textList);
+        meta.setLore(contentList);
         item.setItemMeta(meta);
         return item;
     }
