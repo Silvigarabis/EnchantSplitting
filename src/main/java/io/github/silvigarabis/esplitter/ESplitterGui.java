@@ -588,7 +588,10 @@ public class ESplitterGui {
         }
         List<String> contentList = null;
         if (textList.size() > 1){
-            contentList = textList.subList(1, textList.size());
+            contentList = new ArrayList<>();
+            for (var text : textList.subList(1, textList.size())){
+                contentList.add("§r§f" + text);
+            }
         }
         item = item.clone();
         var meta = item.getItemMeta();
