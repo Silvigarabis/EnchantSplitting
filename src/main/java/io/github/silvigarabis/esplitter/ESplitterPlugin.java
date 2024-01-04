@@ -100,7 +100,7 @@ public final class ESplitterPlugin extends JavaPlugin {
         
         logger.info("正在加载聊天消息");
         saveResource("message.yml", false);
-        var messageConfigFile = new File(getDataDir().getPath(), "message.yml");
+        var messageConfigFile = new File(getDataFolder().getPath(), "message.yml");
         Messages.cleanMessageConfig();
         Messages.loadMessageConfig(messageConfigFile);
         if (Messages.countMissingMessage() == 0){

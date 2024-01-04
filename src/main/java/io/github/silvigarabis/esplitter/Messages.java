@@ -5,6 +5,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 
+import java.io.File;
 import java.util.Map;
 import java.util.EnumMap;
 
@@ -56,9 +57,9 @@ public class Messages {
         }
     }
 
-    private static Map<String, String> messages = new EnumMap<>();
+    private static Map<MessageKey, String> messages = new EnumMap<>();
     public static int countMissingMessage(){
-        return MessageKey.values() - messages.size();
+        return MessageKey.values().length - messages.size();
     }
     public static void cleanMessageConfig(){
         messages.clear();
@@ -80,14 +81,14 @@ public class Messages {
     public static String getMessageString(MessageKey messageKey){
         return messages.contains(messageKey) ? messages.get(messageKey) : messageKey.getMessageKey();
     }
-    public static void send(CommandSender sender, MessageKeys key, String[] replacements){
+    public static void send(CommandSender sender, MessageKey key, String[] replacements){
         var messageString = getMessageString(key);
         for (var replacement : replacements){
             messageString = messageString.replaceFirst("\\{\\}", replacement);
         }
         send(sender, messageString);
     }
-    public static void send(CommandSender sender, MessageKeys key){
+    public static void send(CommandSender sender, MessageKey key){
         send(sender, getMessageString(key));
     }
     public static void send(CommandSender sender, String message){
@@ -96,10 +97,10 @@ public class Messages {
         message = message.replaceAll("&&", "&");
         sender.sendMessage(message);
     }
-    public static void sendConsole(MessageKeys key, String[] replacements){
+    public static void sendConsole(MessageKey key, String[] replacements){
         send(Bukkit.getConsoleSender(), key, replacements);
     }
-    public static void sendConsole(MessageKeys key){
+    public static void sendConsole(MessageKey key){
         send(Bukkit.getConsoleSender(), key);
     }
     public static void sendConsole(String message){
