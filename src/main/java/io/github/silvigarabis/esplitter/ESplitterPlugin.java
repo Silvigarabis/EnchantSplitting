@@ -85,24 +85,11 @@ public final class ESplitterPlugin extends JavaPlugin {
     @Override
     public void reloadConfig(){
         saveDefaultConfig();
-
-        ConfigurationSection config;
-        /*
-        try {
-            super.reloadConfig();
-            config = getConfig();
-        } catch (InvalidConfigurationException ex){
-            logger.severe("尝试加载配置文件时出现错误");
-            ex.printStackTrace();
-            config = null;
-        }
-        */
         super.reloadConfig();
-        config = getConfig();
+        ESplitterConfig.cleanConfig();
+        ESplitterConfig.loadConfig(getConfig());
         
-        this.config = null;
-        if (ESplitterConfig.verifyConfig(config)){
-            this.config = config;
+        if (ESplitterConfig.isConfigured()){
             logger.info("配置文件加载成功！");
         } else {
             logger.warning("插件配置有误，请检查配置文件是否正确。");
