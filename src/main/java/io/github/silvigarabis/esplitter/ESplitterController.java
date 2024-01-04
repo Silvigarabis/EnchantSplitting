@@ -83,11 +83,7 @@ public final class ESplitterController {
         this.selectedItem = item;
         this.gui.setSelectedItem(item);
         
-        if (item == null){
-            return;
-        }
-        
-        if (isItemAcceptable(item)){
+        if (item != null && isItemAcceptable(item)){
             itemAccepted = true;
             //之前没想到这里返回的是 com.google.common.collect.ImmutableMap
             //用一个HashMap改一下
