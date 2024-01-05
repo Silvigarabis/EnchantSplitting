@@ -193,10 +193,12 @@ public class Messages {
     }
 
     public static void send(CommandSender sender, String message){
-        message = getMessageString(MessageKey.CHAT_PREFIX) + " " + message;
-        message = message.replaceAll("&([0-9a-fmnol])", "§$1");
-        message = message.replaceAll("&&", "&");
-        sender.sendMessage(message);
+        for (var line : message.split("\n")){
+            line = getMessageString(MessageKey.CHAT_PREFIX) + " " + line;
+            line = line.replaceAll("&([0-9a-fmnol])", "§$1");
+            line = line.replaceAll("&&", "&");
+            sender.sendMessage(line);
+        }
     }
     
     public static void consoleLog(java.util.logging.Level level, MessageKey key, String replacement, String... replacements){
