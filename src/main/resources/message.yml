@@ -11,6 +11,7 @@ command-unknown: "&e未知的命令"
 command-resolving: 正在处理指令……
         
 command-help:
+   no-permission: "&c没有权限……" 
    general: |-
       用法：/{} [gui|help|reload|debug]
       用法：/esgui [player]

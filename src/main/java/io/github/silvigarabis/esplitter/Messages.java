@@ -207,7 +207,7 @@ public class Messages {
         message = message.replaceAll("[§&]([0-9a-fmnol])", "");
         var logger = Logger.getLogger(loggerName);
         for (var line : message.split("\n")){
-            logger.log(level, message);
+            logger.log(level, line);
         }
     }
 
