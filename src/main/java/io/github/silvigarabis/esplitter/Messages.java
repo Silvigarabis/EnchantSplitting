@@ -130,17 +130,22 @@ public class Messages {
         var messageConfig = YamlConfiguration.loadConfiguration(yamlConfigFile);
         loadMessageConfig(messageConfig);
     }
-    public static String getMessageString(MessageKey messageKey){
+    public static String getMessageString(MessageKey messageKey, boolean translateColorCode){
         var string = messages.get(messageKey);
         if (string == null || string.length() == 0){
             string = messageKey.getDefaultString();
         }
 
         if (string == null || string.length() == 0){
-            return messageKey.getMessageKey();
-        } else {
-            return string;
+            string = messageKey.getMessageKey();
+        } else if (translateColorCode){
+            string = string.replaceAll("&([0-9a-fmnol])", "§$1");
+            string = string.replaceAll("&&", "&");
         }
+        return string;
+    }
+    public static String getMessageString(MessageKey messageKey){
+        return getMessageString(messageKey, true);
     }
     
     public static String getMessage(MessageKey key, String[] replacements){
@@ -195,8 +200,6 @@ public class Messages {
     public static void send(CommandSender sender, String message){
         for (var line : message.split("\n")){
             line = getMessageString(MessageKey.CHAT_PREFIX) + " " + line;
-            line = line.replaceAll("&([0-9a-fmnol])", "§$1");
-            line = line.replaceAll("&&", "&");
             sender.sendMessage(line);
         }
     }
