@@ -25,7 +25,7 @@ public class Messages {
     public enum MessageKey {
         COMMAND_NO_PERMISSION("command-no-permission"),
         COMMAND_UNKNOWN("command-unknown"),
-        COMMAND_RRSOLVINH("command-resolving"),
+        COMMAND_RESOLVING("command-resolving"),
 
         COMMAND_GUI_NO_PERMISSION("command-gui.no-permission"),
         COMMAND_GUI_NO_PERMISSION_FOR_OTHERS("command-gui.no-permission-for-others"),
