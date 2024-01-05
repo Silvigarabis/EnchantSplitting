@@ -102,9 +102,8 @@ public final class ESplitterPlugin extends JavaPlugin {
         
         Messages.consoleInfo(Messages.MessageKey.PLUGIN_RELOADING_MESSAGE_CONFIG);
         saveResource("message.yml", false);
-        var messageConfigFile = new File(getDataFolder().getPath(), "message.yml");
-        //Messages.cleanMessageConfig();
-        Messages.loadMessageConfig(messageConfigFile);
+        YamlConfiguration messageConfig = YamlConfiguration.loadConfiguratiom(new File(getDataFolder().getPath(), "message.yml"));
+        Messages.loadMessageConfig(messageConfig);
         List<Messages.MessageKey> missingMessageKeys = Messages.getMissingMessageKeys();
         if (missingMessageKeys.size() == 0){
             Messages.consoleInfo(Messages.MessageKey.PLUGIN_MESSAGE_CONFIG_LOADED);

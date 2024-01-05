@@ -58,19 +58,19 @@ public class Messages {
         GUI_UNEXPECTED_EVENT_ERROR("gui.unexpected-event-error"),
         GUI_UNEXPECTED_CLOSE("gui.unexpected-error"),
 
-        INVALID_PLUGIN_CONFIG("console-message.invalid-plugin-config"),
+        INVALID_PLUGIN_CONFIG("console-message.invalid-plugin-config", "配置文件错误！尝试在修正后使用/esplitter reload重新加载"),
         PLUGIN_LOADING("console-message.plugin-loading", "插件正在加载"),
         PLUGIN_ENABLED("console-message.plugin-enabled", "插件已加载完毕"),
         PLUGIN_DISABLED("console-message.plugin-disabled", "插件已退出"),
-        PLUGIN_ERROR_DOUBLE_LOAD("console-message.plugin-load-twice-error"),
-        PLUGIN_RELOADING_CONFIG("console-message.plugin-config-reloading"),
-        PLUGIN_CONFIG_LOADED("console-message.plugin-config-loaded"),
-        PLUGIN_CONFIG_LOAD_ERROR("console-message.plugin-config-load-fail"),
-        PLUGIN_RELOADING_MESSAGE_CONFIG("console-message.plugin-message-config-reloading"),
-        PLUGIN_MESSAGE_CONFIG_LOADED("console-message.plugin-message-config-loaded"),
-        PLUGIN_MESSAGE_CONFIG_LOAD_MISSING("console-message.plugin-message-config-missing"),
+        PLUGIN_ERROR_DOUBLE_LOAD("console-message.plugin-load-twice-error", "错误！插件被启用了两次！"),
+        PLUGIN_RELOADING_CONFIG("console-message.plugin-config-reloading", "正在加载配置"),
+        PLUGIN_CONFIG_LOADED("console-message.plugin-config-loaded", "消息文本已加载"),
+        PLUGIN_CONFIG_LOAD_ERROR("console-message.plugin-config-load-fail", "配置加载出现错误"),
+        PLUGIN_RELOADING_MESSAGE_CONFIG("console-message.plugin-message-config-reloading", "正在加载消息文本"),
+        PLUGIN_MESSAGE_CONFIG_LOADED("console-message.plugin-message-config-loaded", "消息文本已加载"),
+        PLUGIN_MESSAGE_CONFIG_LOAD_MISSING("console-message.plugin-message-config-missing", "缺失 {} 条消息文本： {}"),
 
-        CHAT_PREFIX("chat-prefix", "ESplitter"),
+        CHAT_PREFIX("chat-prefix", "[ESplitter]"),
         LOGGER_NAME("logger-name", "ESplitter");
 
         private String messageKey = null;
