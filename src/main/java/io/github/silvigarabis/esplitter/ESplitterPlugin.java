@@ -115,6 +115,7 @@ public final class ESplitterPlugin extends JavaPlugin {
                 missingMessageKeys
                   .stream()
                   .map(key -> key.getMessageKey())
+                  .toList()
                   .toString()
             );
         }
