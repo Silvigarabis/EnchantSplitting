@@ -127,7 +127,7 @@ public class Messages {
         for (int idx = 1; idx <= replacements.length; idx++){
            fullReplacements[idx] = replacements[idx - 1];
         }
-        send(key, fullReplacements);
+        send(sender, key, fullReplacements);
     }
     public static void send(CommandSender sender, MessageKey key, String[] replacements){
         send(sender, getMessage(key, replacements));
@@ -149,7 +149,7 @@ public class Messages {
         for (int idx = 1; idx <= replacements.length; idx++){
            fullReplacements[idx] = replacements[idx - 1];
         }
-        consoleLog(level, fullReplacements);
+        consoleLog(level, key, fullReplacements);
     }
     public static void consoleLog(java.util.logging.Level level, MessageKey key, String[] replacements){
         consoleLog(level, getMessage(key, replacements));
@@ -176,7 +176,7 @@ public class Messages {
         for (int idx = 1; idx <= replacements.length; idx++){
            fullReplacements[idx] = replacements[idx - 1];
         }
-        consoleInfo(fullReplacements);
+        consoleInfo(key, fullReplacements);
     }
     public static void consoleLog(MessageKey key, String[] replacements){
         consoleInfo(getMessage(key, replacements));
@@ -194,7 +194,7 @@ public class Messages {
         for (int idx = 1; idx <= replacements.length; idx++){
            fullReplacements[idx] = replacements[idx - 1];
         }
-        consoleWarn(fullReplacements);
+        consoleWarn(key, fullReplacements);
     }
     public static void consoleWarn(MessageKey key, String[] replacements){
         consoleWarn(getMessage(key, replacements));
@@ -212,7 +212,7 @@ public class Messages {
         for (int idx = 1; idx <= replacements.length; idx++){
            fullReplacements[idx] = replacements[idx - 1];
         }
-        consoleError(fullReplacements);
+        consoleError(key, fullReplacements);
     }
     public static void consoleError(MessageKey key, String[] replacements){
         consoleError(getMessage(key, replacements));
