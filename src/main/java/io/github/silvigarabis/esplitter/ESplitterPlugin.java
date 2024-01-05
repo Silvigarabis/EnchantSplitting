@@ -20,6 +20,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.InvalidConfigurationException;
 
 import java.util.logging.Logger;
+import java.util.List;
 import java.io.File;
 
 public final class ESplitterPlugin extends JavaPlugin {

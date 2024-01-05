@@ -168,6 +168,7 @@ public class ESplitterGui {
     private void updateItemAcceptableStatus(){
         ItemStack item;
         
+        //TODO: 修复此处在初次展示的时候不会显示黄色的问题
         if (this.ctrl.selectedItem == null){
             item = createTextItem(
                 Material.YELLOW_STAINED_GLASS_PANE,
@@ -357,6 +358,8 @@ public class ESplitterGui {
     
     public void setEnchantmentElements(List<EnchantmentSet> enchantSetList, Map<Enchantment, Integer> enchantments){
         
+        //TODO: 修复可能多生成一张空白页面的问题
+
         //复制一份，不然被改了就麻烦了
         enchantSetList = new ArrayList<>(enchantSetList);
 

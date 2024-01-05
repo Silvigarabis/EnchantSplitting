@@ -20,6 +20,8 @@ import java.util.Map;
 import java.util.EnumMap;
 
 import java.util.logging.Logger;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 和插件聊天消息发送有关的类。

@@ -49,6 +49,6 @@ console-message:
       在确认无误后，可以使用 &b/esplitter reload&r 重新加载。
    plugin-message-config-reloading: 正在加载聊天消息
    plugin-message-config-loaded: 聊天消息已加载成功！
-   plugin-message-config-missing: "缺少 {} 条聊天消息"
+   plugin-message-config-missing: "缺少 {} 条聊天消息： {}"
    plugin-load-twice-error: 错误！插件被启用了两次
    plugin-config-reloading: 正在加载配置文件
