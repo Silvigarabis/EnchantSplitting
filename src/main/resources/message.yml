@@ -25,7 +25,7 @@ command-gui:
 
 command-reload:
    no-permission: 没有权限重载插件
-   processing-reload: 重新载入配置文件中
+   reload-processing: 重新载入配置文件中
    success: 已成功加载配置文件！
    fail: 载入配置文件失败！请检查服务器控制台日志
    
