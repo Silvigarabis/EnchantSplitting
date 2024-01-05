@@ -21,6 +21,16 @@ public class MainCommandExecutor implements CommandExecutor {
     
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        try {
+            onCommand0(sender, command, label, args);
+            return true;
+        } catch(Throwable error){
+            // i cant resolve any errors, but i can close all gui
+            EventListener.closeAll();
+            throw error;
+        }
+    }
+    private void onCommand0(CommandSender sender, Command command, String label, String[] args) {
         Messages.consoleInfo(MessageKey.COMMAND_RESOLVING);
         if (!ESplitterPlugin.isConfigured()){
             Messages.send(sender, MessageKey.INVALID_PLUGIN_CONFIG);
@@ -62,8 +72,6 @@ public class MainCommandExecutor implements CommandExecutor {
                 helpCmd(sender, label, args);
                 break;
         }
-        
-        return true;
     }
     
     private static Player getPlayer(String playerName){

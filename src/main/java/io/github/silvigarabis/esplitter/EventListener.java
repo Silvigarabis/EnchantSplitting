@@ -26,6 +26,15 @@ public final class EventListener implements Listener {
     protected static Map<InventoryView, ESplitterGui> guiViews = new HashMap();
     
     @EventHandler(ignoreCancelled=true)
+    public void inventoryOpen(InventoryOpenEvent event){
+        var inventoryView = event.getView();
+        var player = event.getPlayer();
+        if (guiViews.containsKey(inventoryView)){
+            Logger.debug("inventoryOpen: an inventory view was about esplitter has been opened for player " + player.getName());
+        }
+    }
+
+    @EventHandler(ignoreCancelled=true)
     public void inventoryClick(InventoryClickEvent event){
         var action = event.getAction();
         var ctype = event.getClick();
@@ -97,7 +106,7 @@ public final class EventListener implements Listener {
         }
     }
     
-    private static void closeAll(){
+    protected static void closeAll(){
         Messages.consoleError(Messages.MessageKey.GUI_UNEXPECTED_EVENT_ERROR);
 
         for (Map.Entry<InventoryView, ESplitterGui> entry : guiViews.entrySet()){
