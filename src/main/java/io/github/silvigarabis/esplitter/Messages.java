@@ -22,6 +22,7 @@ import java.util.EnumMap;
 import java.util.logging.Logger;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
 
 /**
  * 和插件聊天消息发送有关的类。
@@ -144,7 +145,7 @@ public class Messages {
     public static String getMessage(MessageKey key, String[] replacements){
         var messageString = getMessageString(key);
         for (var replacement : replacements){
-            messageString = messageString.replaceFirst("\\{\\}", replacement);
+            messageString = messageString.replaceFirst("\\{\\}", Matcher.quoteReplacement(replacement));
         }
         return messageString;
     }

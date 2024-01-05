@@ -1,7 +1,7 @@
 chat-prefix: "[${project.name}]"
 logger-name: ${project.name}
 gui:
-   title: &l&e物品附魔分析以及分离/抹除
+   title: "&l&e物品附魔分析以及分离/抹除"
    unexpected-error: 出现未知错误
    unexpected-event-error: 处理事件时出现未知错误，强行关闭所有窗口
    unexpected-event-error-close-all: 所有窗口已被关闭
