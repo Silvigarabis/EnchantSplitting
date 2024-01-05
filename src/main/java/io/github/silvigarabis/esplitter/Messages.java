@@ -11,6 +11,7 @@
 package io.github.silvigarabis.esplitter;
 
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -159,6 +160,21 @@ public class Messages {
           fullReplacements[idx] = replacements[idx - 1];
        }
        return getMessage(key, fullReplacements);
+    }
+
+    public static String getMessage(Player player, MessageKey key, String[] replacements){
+        return getMessage(key, replacements);
+    }
+    public static String getMessage(Player player, MessageKey key){
+        return getMessage(key);
+    }
+    public static String getMessage(Player player, MessageKey key, String replacement, String... replacements){
+       String[] fullReplacements = new String[replacements.length + 1];
+       fullReplacements[0] = replacement;
+       for (int idx = 1; idx <= replacements.length; idx++){
+          fullReplacements[idx] = replacements[idx - 1];
+       }
+       return getMessage(player, key, fullReplacements);
     }
 
     public static void send(CommandSender sender, MessageKey key, String replacement, String... replacements){

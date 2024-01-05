@@ -326,7 +326,7 @@ public class ESplitterGui {
     }
     public void show(Player player) {
         
-        inventory = Bukkit.createInventory(player, 54, "Es");
+        inventory = Bukkit.createInventory(player, 54, Messages.getMessage(player, Messages.MessageKey.GUI_TITLE));
         inventoryView = player.openInventory(inventory);
         
         EventListener.guiViews.put(inventoryView, this);
