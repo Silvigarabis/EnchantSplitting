@@ -130,11 +130,11 @@ public class Messages {
     }
     public static String getMessageString(MessageKey messageKey){
         var string = messages.get(messageKey);
-        if (string == null && string.length() == 0){
+        if (string == null || string.length() == 0){
             string = messageKey.getDefaultString();
         }
 
-        if (string == null && string.length() == 0){
+        if (string == null || string.length() == 0){
             return messageKey.getMessageKey();
         } else {
             return string;
