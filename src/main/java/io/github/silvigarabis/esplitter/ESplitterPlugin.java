@@ -114,7 +114,7 @@ public final class ESplitterPlugin extends JavaPlugin {
                 Messages.MessageKey.PLUGIN_MESSAGE_CONFIG_LOAD_MISSING,
                 Integer.toString(missingMessageKeys.size()),
                 missingMessageKeys
-                  .steam()
+                  .stream()
                   .map(key -> key.getMessageKey())
                   .toString()
             );
