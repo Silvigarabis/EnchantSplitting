@@ -1,13 +1,15 @@
-chat-prefix: "[ESplitter]"
-invalid-plugin-config: ""
-
+chat-prefix: "[${project.name}]"
+logger-name: ${project.name}
 gui:
-   title:
-   unexpected-error:
-
+   title: &l&e物品附魔分析以及分离/抹除
+   unexpected-error: 出现未知错误
+   unexpected-event-error: 处理事件时出现未知错误，强行关闭所有窗口
+   unexpected-event-error-close-all: 所有窗口已被关闭
+        
 command-no-permission: "&c没有使用权限" 
 command-unknown: "&e未知的命令"
-
+command-resolving: 正在处理指令……
+        
 command-help:
    general: |-
       用法：/{} [gui|help|reload|debug]
@@ -16,19 +18,37 @@ command-help:
       用法：/{} [player]
 
 command-gui:
-   no-permission: "没有权限打开GUI"
-   no-permission-for-others: "没有权限为其他玩家打开GUI"
+   no-permission: 没有权限打开GUI
+   no-permission-for-others: 没有权限为其他玩家打开GUI
    other-player-not-found: "错误！未找到玩家 {}"
-   player-only: "仅玩家可用"
+   player-only: 仅玩家可用
 
 command-reload:
-   no-permission: "没有权限重载插件"
-   processing-reload: "重新载入配置文件中"
-   success: "已成功加载配置文件！"
-   fail: "载入配置文件失败！请检查服务器控制台日志"
+   no-permission: 没有权限重载插件
+   processing-reload: 重新载入配置文件中
+   success: 已成功加载配置文件！
+   fail: 载入配置文件失败！请检查服务器控制台日志
    
 command-debug:
-   no-permission: "没有权限使用此功能"
-   debug-enable: "Debug 模式被设置为 true"
-   debug-disable: "Debug 模式被设置为 false"
+   no-permission: 没有权限使用此功能
+   debug-enable: Debug 模式被设置为 true
+   debug-disable: Debug 模式被设置为 false
    debug-status: "Debug 模式: {}"
+
+console-message:
+   plugin-loading: 正在加载插件
+   plugin-enabled: 插件已完成加载
+   plugin-disabled: 插件已退出
+   invalid-plugin-config: >-
+      插件的配置文件没有正确配置
+      这可能是因为其中含有语法错误，或者缺失了必要的配置。
+      尝试修正配置，并在这之后使用 &b/esplitter reload&r 重新载入配置文件。
+   plugin-config-loaded: 配置文件加载成功！
+   plugin-config-load-fail: >-
+      插件配置有误，请检查配置文件是否正确。
+      在确认无误后，可以使用 &b/esplitter reload&r 重新加载。
+   plugin-message-config-reloading: 正在加载聊天消息
+   plugin-message-config-loaded: 聊天消息已加载成功！
+   plugin-message-config-missing: "缺少 {} 条聊天消息"
+   plugin-load-twice-error: 错误！插件被启用了两次
+   plugin-config-reloading: 正在加载配置文件

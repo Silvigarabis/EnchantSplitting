@@ -16,13 +16,13 @@ public final class Logger {
             return;
         }
         
-        Utils.getLogger().info(message);
+        Messages.consoleInfo(message);
     }
     public static void debugWarning(String message){
         if (!ESplitterPlugin.getPlugin().isDebugMode()){
             return;
         }
         
-        Utils.getLogger().warning(message);
+        Messages.consoleWarn(message);
     }
 }

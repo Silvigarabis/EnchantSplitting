@@ -25,6 +25,7 @@ public class Messages {
     public enum MessageKey {
         COMMAND_NO_PERMISSION("command-no-permission"),
         COMMAND_UNKNOWN("command-unknown"),
+        COMMAND_RRSOLVINH("command-resolving"),
 
         COMMAND_GUI_NO_PERMISSION("command-gui.no-permission"),
         COMMAND_GUI_NO_PERMISSION_FOR_OTHERS("command-gui.no-permission-for-others"),
@@ -46,18 +47,39 @@ public class Messages {
         COMMAND_HELP_ESGUI("command-help.esgui"),
 
         GUI_TITLE("gui.title"),
+        GUI_UNEXPECTED_EVENT_ERROR_CLOSE_ALL("gui.unexpected-event-error-close-all"),
+        GUI_UNEXPECTED_EVENT_ERROR("gui.unexpected-event-error"),
         GUI_UNEXPECTED_CLOSE("gui.unexpected-error"),
 
-        INVALID_PLUGIN_CONFIG("invalid-plugin-config"),
-        CHAT_PREFIX("chat-prefix"),
-        LOGGER_NAME("logger-name");
+        INVALID_PLUGIN_CONFIG("console-message.invalid-plugin-config"),
+        PLUGIN_LOADING("console-message.plugin-loading", "插件正在加载"),
+        PLUGIN_ENABLED("console-message.plugin-enabled", "插件已加载完毕"),
+        PLUGIN_DISABLED("console-message.plugin-disabled", "插件已退出"),
+        PLUGIN_ERROR_DOUBLE_LOAD("console-message.plugin-load-twice-error"),
+        PLUGIN_RELOADING_CONFIG("console-message.plugin-config-reloading"),
+        PLUGIN_CONFIG_LOADED("console-message.plugin-config-loaded"),
+        PLUGIN_CONFIG_LOAD_ERROR("console-message.plugin-config-load-fail"),
+        PLUGIN_RELOADING_MESSAGE_CONFIG("console-message.plugin-message-config-reloading"),
+        PLUGIN_MESSAGE_CONFIG_LOADED("console-message.plugin-message-config-loaded"),
+        PLUGIN_MESSAGE_CONFIG_LOAD_MISSING("console-message.plugin-message-config-missing"),
 
-        private String messageKey;
+        CHAT_PREFIX("chat-prefix", "ESplitter"),
+        LOGGER_NAME("logger-name", "ESplitter");
+
+        private String messageKey = null;
         public String getMessageKey(){
             return messageKey;
         }
+        private String defaultString;
+        public String getDefaultString(){
+            return defaultString;
+        }
         private MessageKey(String messageKey){
             this.messageKey = messageKey;
+        }
+        private MessageKey(String messageKey, String defaultString){
+            this.messageKey = messageKey;
+            this.defaultString = defaultString;
         }
         public void send(CommandSender sender){
             Messages.send(sender, this);
@@ -95,6 +117,10 @@ public class Messages {
     }
     public static String getMessageString(MessageKey messageKey){
         var string = messages.get(messageKey);
+        if (string == null && string.length() == 0){
+            string = messageKey.getDefaultString();
+        }
+
         if (string == null && string.length() == 0){
             return messageKey.getMessageKey();
         } else {

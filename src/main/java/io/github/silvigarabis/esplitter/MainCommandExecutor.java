@@ -17,18 +17,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.Bukkit;
 import io.github.silvigarabis.esplitter.Messages.MessageKey;
 
-import java.util.logging.Logger;
-
 public class MainCommandExecutor implements CommandExecutor {
     
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        ESplitterPlugin.getPlugin().getLogger().info("正在处理指令……");
+        Messages.consoleInfo(MessageKey.COMMAND_RESOLVING);
         if (!ESplitterPlugin.isConfigured()){
             Messages.send(sender, MessageKey.INVALID_PLUGIN_CONFIG);
-            ESplitterPlugin.getPlugin().getLogger().warning("插件的配置文件没有正确配置");
-            ESplitterPlugin.getPlugin().getLogger().warning("这可能是因为其中含有语法错误，或者缺失了必要的配置");
-            ESplitterPlugin.getPlugin().getLogger().warning("尝试修正配置，并在这之后使用 /esplitter reload 重新载入配置文件");
         }
     
         if (!Permissions.MAIN_COMMAND.check(sender)){

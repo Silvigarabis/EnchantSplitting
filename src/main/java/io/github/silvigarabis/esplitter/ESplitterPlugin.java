@@ -53,12 +53,12 @@ public final class ESplitterPlugin extends JavaPlugin {
     public void onEnable(){
         this.logger = this.getLogger();
 
-        logger.info("ESplitter 正在加载。");
+        Messages.consoleInfo(Messages.MessageKey.PLUGIN_LOADING);
         
         if (plugin == null){
             plugin = this;
         } else {
-            logger.severe("检测到另一个插件实例正在运行！");
+            Messages.consoleError(Messages.MessageKey.PLUGIN_ERROR_DOUBLE_LOAD);
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
@@ -68,7 +68,7 @@ public final class ESplitterPlugin extends JavaPlugin {
         
         this.reloadConfig();
 
-        logger.info("ESplitter 已加载。");
+        Messages.consoleInfo(Messages.MessageKey.PLUGIN_ENABLED);
         logger.info("ESplitter 插件，一个让玩家可以分离装备上的附魔的插件");
         logger.info("源代码： https://github.com/Imeaces/EnchantmentSplitter");
         logger.info("你可以在在GitHub上提出建议，或者反馈错误： https://github.com/Imeaces/EnchantmentSplitter/issues");
@@ -79,12 +79,14 @@ public final class ESplitterPlugin extends JavaPlugin {
         if (plugin == this){
             plugin = null;
         }
-        logger.info("插件已禁用");
+        ESplitterConfig.cleanConfig();
+        Messages.cleanMessageConfig();
+        Messages.consoleInfo(Messages.MessageKey.PLUGIN_DISABLED);
     }
     
     @Override
     public void reloadConfig(){
-        logger.info("正在加载配置文件");
+        Messages.consoleInfo(Messages.MessageKey.PLUGIN_RELOADING_CONFIG);
 
         saveDefaultConfig();
         super.reloadConfig();
@@ -92,21 +94,20 @@ public final class ESplitterPlugin extends JavaPlugin {
         ESplitterConfig.loadConfig(getConfig());
         
         if (ESplitterConfig.isConfigured()){
-            logger.info("配置文件加载成功！");
+            Messages.consoleInfo(Messages.MessageKey.PLUGIN_CONFIG_LOADED);
         } else {
-            logger.warning("插件配置有误，请检查配置文件是否正确。");
-            logger.warning("在确认无误后，可以使用/esplitter reload重新加载");
+            Messages.consoleWarn(Messages.MessageKey.PLUGIN_CONFIG_LOAD_ERROR);
         }
         
-        logger.info("正在加载聊天消息");
+        Messages.consoleInfo(Messages.MessageKey.PLUGIN_RELOADING_MESSAGE_CONFIG);
         saveResource("message.yml", false);
         var messageConfigFile = new File(getDataFolder().getPath(), "message.yml");
-        Messages.cleanMessageConfig();
+        //Messages.cleanMessageConfig();
         Messages.loadMessageConfig(messageConfigFile);
         if (Messages.countMissingMessage() == 0){
-            logger.info("聊天消息已加载成功！");
+            Messages.consoleInfo(Messages.MessageKey.PLUGIN_MESSAGE_CONFIG_LOADED);
         } else {
-            logger.warning("缺少" + Messages.countMissingMessage() + "聊天消息");
+            Messages.consoleWarn(Messages.MessageKey.PLUGIN_MESSAGE_CONFIG_LOAD_MISSING, Integer.toString(Messages.countMissingMessage()));
         }
     }
 }

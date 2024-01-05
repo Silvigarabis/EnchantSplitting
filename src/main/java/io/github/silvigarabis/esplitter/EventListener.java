@@ -98,20 +98,20 @@ public final class EventListener implements Listener {
     }
     
     private static void closeAll(){
-        ESplitterPlugin.getPlugin().getLogger().severe("处理事件时出现未知错误，强行关闭所有窗口");
+        Messages.consoleError(Messages.MessageKey.GUI_UNEXPECTED_EVENT_ERROR);
 
         for (Map.Entry<InventoryView, ESplitterGui> entry : guiViews.entrySet()){
             try {
                 entry.getValue().closeGui();
                 entry.getKey().getPlayer().closeInventory();
-                entry.getKey().getPlayer().sendMessage("[ESplitter] 出现未知错误");
+                Messages.send(entry.getKey().getPlayer(), Messages.MessageKey.GUI_UNEXPECTED_CLOSE);
             } catch (Throwable ignored){
-                
+                //TODO: 这里错误应该输出日志
             }
         }
 
         guiViews.clear();
 
-        ESplitterPlugin.getPlugin().getLogger().severe("所有窗口已被关闭");
+        Messages.consoleError(Messages.MessageKey.GUI_UNEXPECTED_EVENT_ERROR_CLOSE_ALL);
     }
 }

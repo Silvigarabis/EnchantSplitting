@@ -35,7 +35,7 @@ public final class Utils {
             try {
                 runnable.run();
             } catch (Exception e){
-                ESplitterPlugin.getPlugin().getLogger().warning("运行出现错误");
+                Messages.consoleWarn("运行出现错误");
                 e.printStackTrace();
             }
         });
