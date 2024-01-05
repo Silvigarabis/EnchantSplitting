@@ -104,10 +104,19 @@ public final class ESplitterPlugin extends JavaPlugin {
         var messageConfigFile = new File(getDataFolder().getPath(), "message.yml");
         //Messages.cleanMessageConfig();
         Messages.loadMessageConfig(messageConfigFile);
-        if (Messages.countMissingMessage() == 0){
+        List<Messages.MessageKey> missingMessageKeys = Messages.getMissingMessageKeys();
+        if (missingMessageKeys.size() == 0){
             Messages.consoleInfo(Messages.MessageKey.PLUGIN_MESSAGE_CONFIG_LOADED);
         } else {
-            Messages.consoleWarn(Messages.MessageKey.PLUGIN_MESSAGE_CONFIG_LOAD_MISSING, Integer.toString(Messages.countMissingMessage()));
+            //大致上就是把缺失的key打印出来
+            Messages.consoleWarn(
+                Messages.MessageKey.PLUGIN_MESSAGE_CONFIG_LOAD_MISSING,
+                Integer.toString(missingMessageKeys.size()),
+                missingMessageKeys
+                  .steam()
+                  .map(key -> key.getMessageKey())
+                  .toString()
+            );
         }
     }
 }

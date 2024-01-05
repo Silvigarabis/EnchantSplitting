@@ -21,6 +21,11 @@ import java.util.EnumMap;
 
 import java.util.logging.Logger;
 
+/**
+ * 和插件聊天消息发送有关的类。
+ *
+ * TODO: 统一命名
+ */
 public class Messages {
     public enum MessageKey {
         COMMAND_NO_PERMISSION("command-no-permission"),
@@ -94,8 +99,14 @@ public class Messages {
 
     private static String DEFAULT_LOGGER_NAME = "ESplitter";
     private static Map<MessageKey, String> messages = new EnumMap<MessageKey, String>(MessageKey.class);
-    public static int countMissingMessage(){
-        return MessageKey.values().length - messages.size();
+    public static List<MessageKey> getMissingMessageKeys(){
+        List<MessageKey> missingKeys = new ArrayList<>();
+        for (MessageKey key : MessageKey.values()){
+            if (!messages.containsKey(key)){
+                missingKeys.add(key);
+            }
+        }
+        return missingKeys;
     }
     public static void cleanMessageConfig(){
         messages.clear();
