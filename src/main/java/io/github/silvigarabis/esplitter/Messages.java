@@ -9,6 +9,8 @@ import java.io.File;
 import java.util.Map;
 import java.util.EnumMap;
 
+import java.util.logging.Logger;
+
 public class Messages {
     public enum MessageKey {
         COMMAND_NO_PERMISSION("command-no-permission"),
@@ -37,7 +39,8 @@ public class Messages {
         GUI_UNEXPECTED_CLOSE("gui.unexpected-error"),
 
         INVALID_PLUGIN_CONFIG("invalid-plugin-config"),
-        CHAT_PREFIX("chat-prefix");
+        CHAT_PREFIX("chat-prefix"),
+        LOGGER_NAME("logger-name");
 
         private String messageKey;
         public String getMessageKey(){
@@ -57,7 +60,8 @@ public class Messages {
         }
     }
 
-    private static Map<MessageKey, String> messages = new EnumMap<MessageKey, String>();
+    private static String DEFAULT_LOGGER_NAME = "ESplitter";
+    private static Map<MessageKey, String> messages = new EnumMap<MessageKey, String>(MessageKey.class);
     public static int countMissingMessage(){
         return MessageKey.values().length - messages.size();
     }
@@ -65,7 +69,8 @@ public class Messages {
         messages.clear();
     }
     public static void loadMessageConfig(ConfigurationSection messageConfig){
-        for (MessageKey messageKey : MessageKey.values()){
+        for (Object messageKeyObject : MessageKey.values()){
+            MessageKey messageKey = (MessageKey) messageKeyObject;
             var key = messageKey.getMessageKey();
             var messageString = messageConfig.get(key);
             if (messageString == null){
@@ -79,27 +84,48 @@ public class Messages {
         loadMessageConfig(messageConfig);
     }
     public static String getMessageString(MessageKey messageKey){
-        return messages.contains(messageKey) ? messages.get(messageKey) : messageKey.getMessageKey();
+        var string = messages.get(messageKey);
+        if (string == null && string.length() == 0){
+            return messageKey.getMessageKey();
+        } else {
+            return string;
+        }
     }
     
-    public static void send(CommandSender sender, MessageKey key, String replacement, String... replacements){
+    public static String getMessage(MessageKey key, String[] replacements){
+        var messageString = getMessageString(key);
+        for (var replacement : replacements){
+            messageString = messageString.replaceFirst("\\{\\}", replacement);
+        }
+        return messageString;
+    }
+    public static String getMessage(MessageKey key){
+        return getMessageString(key);
+    }
+    public static String getMessage(MessageKey key, String replacement, String... replacements){
        String[] fullReplacements = new String[replacements.length + 1];
        fullReplacements[0] = replacement;
        for (int idx = 1; idx <= replacements.length; idx++){
           fullReplacements[idx] = replacements[idx - 1];
        }
-       send(sender, key, fullReplacements);
+       return getMessage(key, fullReplacements);
+    }
+
+    public static void send(CommandSender sender, MessageKey key, String replacement, String... replacements){
+        String[] fullReplacements = new String[replacements.length + 1];
+        fullReplacements[0] = replacement;
+        for (int idx = 1; idx <= replacements.length; idx++){
+           fullReplacements[idx] = replacements[idx - 1];
+        }
+        send(key, fullReplacements);
     }
     public static void send(CommandSender sender, MessageKey key, String[] replacements){
-        var messageString = getMessageString(key);
-        for (var replacement : replacements){
-            messageString = messageString.replaceFirst("\\{\\}", replacement);
-        }
-        send(sender, messageString);
+        send(sender, getMessage(key, fullReplacements));
     }
     public static void send(CommandSender sender, MessageKey key){
         send(sender, getMessageString(key));
     }
+
     public static void send(CommandSender sender, String message){
         message = getMessageString(MessageKey.CHAT_PREFIX) + " " + message;
         message = message.replaceAll("&([0-9a-fmnol])", "§$1");
@@ -107,16 +133,85 @@ public class Messages {
         sender.sendMessage(message);
     }
     
-    public static void sendConsole(MessageKey key, String[] replacements){
-        send(Bukkit.getConsoleSender(), key, replacements);
+    public static void consoleLog(java.util.logging.Level level, MessageKey key, String replacement, String... replacements){
+        String[] fullReplacements = new String[replacements.length + 1];
+        fullReplacements[0] = replacement;
+        for (int idx = 1; idx <= replacements.length; idx++){
+           fullReplacements[idx] = replacements[idx - 1];
+        }
+        consoleLog(level, fullReplacements);
     }
-    public static void sendConsole(MessageKey key, String replacement, String... replacements){
-        send(Bukkit.getConsoleSender(), replacement, replacements);
+    public static void consoleLog(java.util.logging.Level level, MessageKey key, String[] replacements){
+        consoleLog(level, getMessage(key, fullReplacements));
     }
-    public static void sendConsole(MessageKey key){
-        send(Bukkit.getConsoleSender(), key);
+    public static void consoleLog(java.util.logging.Level level, MessageKey key){
+        consoleLog(level, getMessageString(key));
     }
-    public static void sendConsole(String message){
-        send(Bukkit.getConsoleSender(), message);
+    public static void consoleLog(java.util.logging.Level level, String message){
+        String loggerName = getMessageString(MessageKey.LOGGER_NAME);
+        if (loggerName == null
+          || loggerName.length() == 0
+          || loggerName.equals(MessageKey.LOGGER_NAME.getMessageKey())){
+            loggerName = DEFAULT_LOGGER_NAME;
+        }
+        
+        message = message.replaceAll("[§&]([0-9a-fmnol])", "");
+        
+        Logger.getLogger(loggerName).log(level, message);
     }
+
+    public static void consoleInfo(MessageKey key, String replacement, String... replacements){
+        String[] fullReplacements = new String[replacements.length + 1];
+        fullReplacements[0] = replacement;
+        for (int idx = 1; idx <= replacements.length; idx++){
+           fullReplacements[idx] = replacements[idx - 1];
+        }
+        consoleInfo(fullReplacements);
+    }
+    public static void consoleLog(MessageKey key, String[] replacements){
+        consoleInfo(getMessage(key, fullReplacements));
+    }
+    public static void consoleLog(MessageKey key){
+        consoleInfo(getMessageString(key));
+    }
+    public static void consoleLog(String message){
+        consoleLog(java.util.logging.Level.INFO, message);
+    }
+
+    public static void consoleWarn(MessageKey key, String replacement, String... replacements){
+        String[] fullReplacements = new String[replacements.length + 1];
+        fullReplacements[0] = replacement;
+        for (int idx = 1; idx <= replacements.length; idx++){
+           fullReplacements[idx] = replacements[idx - 1];
+        }
+        consoleWarn(fullReplacements);
+    }
+    public static void consoleWarn(MessageKey key, String[] replacements){
+        consoleWarn(getMessage(key, fullReplacements));
+    }
+    public static void consoleWarn(MessageKey key){
+        consoleWarn(getMessageString(key));
+    }
+    public static void consoleWarn(String message){
+        consoleLog(java.util.logging.Level.WARNING, message);
+    }
+
+    public static void consoleError(MessageKey key, String replacement, String... replacements){
+        String[] fullReplacements = new String[replacements.length + 1];
+        fullReplacements[0] = replacement;
+        for (int idx = 1; idx <= replacements.length; idx++){
+           fullReplacements[idx] = replacements[idx - 1];
+        }
+        consoleError(fullReplacements);
+    }
+    public static void consoleError(MessageKey key, String[] replacements){
+        consoleError(getMessage(key, fullReplacements));
+    }
+    public static void consoleError(MessageKey key){
+        consoleError(getMessageString(key));
+    }
+    public static void consoleError(String message){
+        consoleLog(java.util.logging.Level.SEVERE, message);
+    }
+
 }
