@@ -204,10 +204,11 @@ public class Messages {
           || loggerName.equals(MessageKey.LOGGER_NAME.getMessageKey())){
             loggerName = DEFAULT_LOGGER_NAME;
         }
-        
         message = message.replaceAll("[§&]([0-9a-fmnol])", "");
-        
-        Logger.getLogger(loggerName).log(level, message);
+        var logger = Logger.getLogger(loggerName);
+        for (var line : message.split("\n")){
+            logger.log(level, message);
+        }
     }
 
     public static void consoleInfo(MessageKey key, String replacement, String... replacements){
