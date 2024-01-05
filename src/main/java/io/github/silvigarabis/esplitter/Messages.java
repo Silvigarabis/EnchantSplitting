@@ -81,8 +81,8 @@ public class Messages {
     public static void loadMessageConfig(ConfigurationSection messageConfig){
         for (Object messageKeyObject : MessageKey.values()){
             MessageKey messageKey = (MessageKey) messageKeyObject;
-            var key = messageKey.getMessageKey();
-            var messageString = messageConfig.get(key);
+            String key = messageKey.getMessageKey();
+            String messageString = messageConfig.getString(key);
             if (messageString == null){
                 continue;
             }
@@ -178,13 +178,13 @@ public class Messages {
         }
         consoleInfo(key, fullReplacements);
     }
-    public static void consoleLog(MessageKey key, String[] replacements){
+    public static void consoleInfo(MessageKey key, String[] replacements){
         consoleInfo(getMessage(key, replacements));
     }
-    public static void consoleLog(MessageKey key){
+    public static void consoleInfo(MessageKey key){
         consoleInfo(getMessageString(key));
     }
-    public static void consoleLog(String message){
+    public static void consoleInfo(String message){
         consoleLog(java.util.logging.Level.INFO, message);
     }
 
