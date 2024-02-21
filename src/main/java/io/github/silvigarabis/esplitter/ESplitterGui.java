@@ -21,6 +21,7 @@ import org.bukkit.inventory.Inventory;
 
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 
 import org.bukkit.event.inventory.InventoryAction;
 
@@ -276,11 +277,13 @@ public class ESplitterGui {
             if (enchantSet == null){
                 continue;
             }
-            
+
             var item = new ItemStack(Material.ENCHANTED_BOOK);
+            EnchantmentStorageMeta itemMeta = (EnchantmentStorageMeta) item.getItemMeta();
             for (var ench : enchantSet){
-                item.addUnsafeEnchantment(ench, this.enchantments.get(ench));
+                itemMeta.addStoredEnchant(ench, this.enchantments.get(ench), true);
             }
+            item.setItemMeta(itemMeta);
 
             int invIndex = elementIndexes[elemIndex];
             
