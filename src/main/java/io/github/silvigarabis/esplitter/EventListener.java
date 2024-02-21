@@ -1,5 +1,5 @@
 /*
-   Copyright (c) 2023 Silvigarabis
+   Copyright (c) 2024 Silvigarabis
    EnchantmentSplitter is licensed under Mulan PSL v2.
    You can use this software according to the terms and conditions of the Mulan PSL v2. 
    You may obtain a copy of Mulan PSL v2 at:
@@ -15,6 +15,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.InventoryView;
 
@@ -25,6 +26,15 @@ public final class EventListener implements Listener {
     
     protected static Map<InventoryView, ESplitterGui> guiViews = new HashMap();
     
+    @EventHandler(ignoreCancelled=true)
+    public void inventoryOpen(InventoryOpenEvent event){
+        var inventoryView = event.getView();
+        var player = event.getPlayer();
+        if (guiViews.containsKey(inventoryView)){
+            Logger.debug("inventoryOpen: an inventory view was about esplitter has been opened for player " + player.getName());
+        }
+    }
+
     @EventHandler(ignoreCancelled=true)
     public void inventoryClick(InventoryClickEvent event){
         var action = event.getAction();
@@ -97,21 +107,21 @@ public final class EventListener implements Listener {
         }
     }
     
-    private static void closeAll(){
-        ESplitterPlugin.getPlugin().getLogger().severe("处理事件时出现未知错误，强行关闭所有窗口");
+    protected static void closeAll(){
+        Messages.consoleError(Messages.MessageKey.GUI_UNEXPECTED_EVENT_ERROR);
 
         for (Map.Entry<InventoryView, ESplitterGui> entry : guiViews.entrySet()){
             try {
                 entry.getValue().closeGui();
                 entry.getKey().getPlayer().closeInventory();
-                entry.getKey().getPlayer().sendMessage("[ESplitter] 出现未知错误");
+                Messages.send(entry.getKey().getPlayer(), Messages.MessageKey.GUI_UNEXPECTED_CLOSE);
             } catch (Throwable ignored){
-                
+                //TODO: 这里错误应该输出日志
             }
         }
 
         guiViews.clear();
 
-        ESplitterPlugin.getPlugin().getLogger().severe("所有窗口已被关闭");
+        Messages.consoleError(Messages.MessageKey.GUI_UNEXPECTED_EVENT_ERROR_CLOSE_ALL);
     }
 }

@@ -1,5 +1,5 @@
 /*
-   Copyright (c) 2023 Silvigarabis
+   Copyright (c) 2024 Silvigarabis
    EnchantmentSplitter is licensed under Mulan PSL v2.
    You can use this software according to the terms and conditions of the Mulan PSL v2. 
    You may obtain a copy of Mulan PSL v2 at:
@@ -16,13 +16,13 @@ public final class Logger {
             return;
         }
         
-        Utils.getLogger().info(message);
+        Messages.consoleInfo(message);
     }
     public static void debugWarning(String message){
         if (!ESplitterPlugin.getPlugin().isDebugMode()){
             return;
         }
         
-        Utils.getLogger().warning(message);
+        Messages.consoleWarn(message);
     }
 }

@@ -1,5 +1,5 @@
 /*
-   Copyright (c) 2023 Silvigarabis
+   Copyright (c) 2024 Silvigarabis
    EnchantmentSplitter is licensed under Mulan PSL v2.
    You can use this software according to the terms and conditions of the Mulan PSL v2. 
    You may obtain a copy of Mulan PSL v2 at:
@@ -169,6 +169,7 @@ public class ESplitterGui {
     private void updateItemAcceptableStatus(){
         ItemStack item;
         
+        //TODO: 修复此处在初次展示的时候不会显示黄色的问题
         if (this.ctrl.selectedItem == null){
             item = createTextItem(
                 Material.YELLOW_STAINED_GLASS_PANE,
@@ -328,7 +329,7 @@ public class ESplitterGui {
     }
     public void show(Player player) {
         
-        inventory = Bukkit.createInventory(player, 54, "Es");
+        inventory = Bukkit.createInventory(player, 54, Messages.getMessage(player, Messages.MessageKey.GUI_TITLE));
         inventoryView = player.openInventory(inventory);
         
         EventListener.guiViews.put(inventoryView, this);
@@ -360,6 +361,8 @@ public class ESplitterGui {
     
     public void setEnchantmentElements(List<EnchantmentSet> enchantSetList, Map<Enchantment, Integer> enchantments){
         
+        //TODO: 修复可能多生成一张空白页面的问题
+
         //复制一份，不然被改了就麻烦了
         enchantSetList = new ArrayList<>(enchantSetList);
 
