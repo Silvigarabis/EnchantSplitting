@@ -143,11 +143,11 @@ public final class ESplitterController {
         return item.clone();
     }
 
-    public boolean splitEnchantSet(EnchantmentSet enchantSet){
+    public boolean splitEnchantSet(int enchantSetIndex){
         throw new RuntimeException("method not implements");
     }
     
-    public boolean grindEnchantSet(EnchantmentSet enchantSet){
+    public boolean grindEnchantSet(int enchantSetIndex){
         throw new RuntimeException("method not implements");
     }
 
