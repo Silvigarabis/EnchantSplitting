@@ -10,132 +10,168 @@
 
 package io.github.silvigarabis.esplitter;
 
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.InventoryAction;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.inventory.InventoryView;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.EnchantmentStorageMeta;
+import org.jetbrains.annotations.Unmodifiable;
+
 import static org.bukkit.Material.ENCHANTED_BOOK;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
-//import java.util.WeakHashMap;
-
+/**
+ * 控制一次会话。
+ */
 public final class ESplitterController {
-    
-    //private WeakHashMap<Player, ESplitterController> controllers = new WeakMap();
-    
-    protected Player player;
-    
-    protected List<String> notifications = new ArrayList();
-    
-    protected ItemStack selectedItem;
-    
-    protected Map<Enchantment, Integer> enchantments;
-    
-    protected List<EnchantmentSet> enchantSetList;
+    private Player player;
+    private ItemStack selectedItem;
+    private Map<Enchantment, Integer> currentEnchants;
+    private List<Set<Enchantment>> evaluatedEnchantGroupList;
+    private ControllerConfig config;
 
-    private ESplitterGui gui;
-    
+    public ItemStack getSelectedItem() {
+        return selectedItem.clone();
+    }
+    public Map<Enchantment, Integer> getCurrentEnchants() {
+        return new LinkedHashMap<>(currentEnchants);
+    }
+    public List<Set<Enchantment>> getEvaluatedEnchantGroupList() {
+        return new LinkedList<>(evaluatedEnchantGroupList.stream().map(LinkedHashSet::new).toList());
+    }
+
+    public static class ControllerConfig {
+        public int maxEnchantSetSize = 1;
+    }
+
     public ESplitterController(Player player){
-        this.gui = new ESplitterGui(this);
+        this.config = new ControllerConfig();
         this.player = player;
-        
-        this.selectItem(player.getInventory().getItemInMainHand());
-        
-        showGui();
-    }
-    
-    public void showGui(){
-        this.gui.show(this.player);
-    }
-    
-    public int getEnchantLevel(Enchantment ench){
-        return this.enchantments.get(ench);
     }
 
     public void selectItem(ItemStack item){
-        this.selectedItem = item;
-        this.gui.setSelectedItem(item);
-        
-        if (item == null){
-            return;
-        }
-        
-        //附魔书暂时不支持（软限制）
-        if (item.getType().equals(ENCHANTED_BOOK)){
-            this.enchantments = new HashMap();
-
+        if (item != null) {
+            this.selectedItem = item.clone();
         } else {
-            //之前没想到这里返回的是 com.google.common.collect.ImmutableMap
-            //用一个HashMap改一下
-            this.enchantments = new HashMap(item.getEnchantments());
+            this.selectedItem = null;
+        }
+        this.updateEnchants();
+        this.evalEnchantsSet();
+    }
+
+    /**
+     * 更新已知的附魔列表
+     */
+    private void updateEnchants() {
+        Map<Enchantment, Integer> currentEnchants;
+        if (this.selectedItem.getType().equals(ENCHANTED_BOOK)){
+            EnchantmentStorageMeta meta = (EnchantmentStorageMeta) this.selectedItem.getItemMeta();
+            currentEnchants = new LinkedHashMap<>(meta.getStoredEnchants());
+        } else {
+            currentEnchants = new LinkedHashMap<>(this.selectedItem.getEnchantments());
+        }
+        this.currentEnchants = currentEnchants;
+    }
+
+    /**
+     * Evaluates the current enchantments set.
+     */
+    private void evalEnchantsSet(){
+        int maxEnchantSetSize = this.config.maxEnchantSetSize;
+        List<Set<Enchantment>> evaluatedEnchantGroupList = new LinkedList<>();
+
+        // 这里做了一个以 maxEnchantSetSize 为单位的分组
+        Set<Enchantment> enchantSet = null;
+        for (var ench : this.currentEnchants.keySet()){
+            if (enchantSet == null || enchantSet.size() >= maxEnchantSetSize) {
+                enchantSet = new LinkedHashSet<>();
+                evaluatedEnchantGroupList.add(enchantSet);
+            }
+            enchantSet.add(ench);
         }
 
-        this.divideEnchantmentSet();
-        this.gui.setEnchantmentElements(this.enchantSetList, this.enchantments);
+        this.evaluatedEnchantGroupList = evaluatedEnchantGroupList;
     }
 
-    // 感觉写的不是很好，先就这样吧，以后看看怎么弄
-
-    private void divideEnchantmentSet(){
-        this.enchantSetList = new ArrayList<>();
-
-        for (var ench : this.enchantments.keySet()){
-            this.enchantSetList.add(new EnchantmentSet(ench));
-        }
-    }
-
-    public boolean splitEnchantment(EnchantmentSet enchantSet){
-        return removeEnchantment(enchantSet);
-    }
-    
-    public boolean grindEnchantment(EnchantmentSet enchantSet){
-        return removeEnchantment(enchantSet);
-    }
-
-    public boolean removeEnchantment(EnchantmentSet enchantSet){
-        if (selectedItem == null || enchantments.size() == 0){
+    public boolean removeEnchants(int enchantSetIndex){
+        var enchantSet = this.evaluatedEnchantGroupList.get(enchantSetIndex);
+        if (enchantSet == null) {
             return false;
+        } else {
+            this.evaluatedEnchantGroupList.set(enchantSetIndex, null);
         }
-        
-        var playerInv = player.getInventory();
-        if (!playerInv.contains(selectedItem)){
-            return false;
-        }
-
-        var slot = playerInv.first(selectedItem);
-
         for (var ench : enchantSet){
-            selectedItem.removeEnchantment(ench);
-            enchantments.remove(ench);
+            this.currentEnchants.remove(ench);
         }
-
-        enchantSetList.removeIf((e) -> e == enchantSet);
-
-        playerInv.setItem(slot, selectedItem);
-        
-        gui.setSelectedItem(selectedItem);
-        
+        this.updateItem();
         return true;
     }
-    
-    public void selectItemAsync(ItemStack item){
-        Utils.runTask(() -> {
-            selectItem(item);
-            Logger.debug("异步更改了玩家选择的物品");
-        });
+
+    /**
+     * 在物品上移除已经被移除的附魔
+     */
+    public ItemStack updateItem() {
+        var item = this.selectedItem;
+        if (item == null) {
+            return null;
+        }
+
+        if (item.getType().equals(ENCHANTED_BOOK)){
+            EnchantmentStorageMeta meta = (EnchantmentStorageMeta) item.getItemMeta();
+
+            Set<Enchantment> enchantsToRemove = new HashSet<>(meta.getStoredEnchants().keySet());
+            enchantsToRemove.removeAll(this.currentEnchants.keySet());
+            for (var ench : enchantsToRemove) {
+                meta.removeStoredEnchant(ench);
+            }
+
+            item.setItemMeta(meta);
+        } else {
+            Set<Enchantment> enchantsToRemove = new HashSet<>(item.getEnchantments().keySet());
+            enchantsToRemove.removeAll(this.currentEnchants.keySet());
+            for (var ench : enchantsToRemove) {
+                item.removeEnchantment(ench);
+            }
+        }
+        return item.clone();
+    }
+
+    public boolean splitEnchantSet(EnchantmentSet enchantSet){
+        throw new RuntimeException("method not implements");
     }
     
-    public static void closeAll(){
+    public boolean grindEnchantSet(EnchantmentSet enchantSet){
+        throw new RuntimeException("method not implements");
     }
+
+    // public boolean removeEnchantment(EnchantmentSet enchantSet){
+    //     if (selectedItem == null || currentEnchants.size() == 0){
+    //         return false;
+    //     }
+        
+    //     var playerInv = player.getInventory();
+    //     if (!playerInv.contains(selectedItem)){
+    //         return false;
+    //     }
+
+    //     var slot = playerInv.first(selectedItem);
+
+    //     for (var ench : enchantSet){
+    //         selectedItem.removeEnchantment(ench);
+    //         currentEnchants.remove(ench);
+    //     }
+
+    //     evalEnchantGroupList.removeIf((e) -> e == enchantSet);
+
+    //     playerInv.setItem(slot, selectedItem);
+        
+    //     return true;
+    // }
 }
