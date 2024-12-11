@@ -16,9 +16,13 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.jetbrains.annotations.Unmodifiable;
 
+import io.github.silvigarabis.esplitter.data.ESplitterConsumpsion;
+import io.github.silvigarabis.esplitter.data.ESplitterEvaluatedEnchantSet;
+
 import static org.bukkit.Material.ENCHANTED_BOOK;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -26,15 +30,19 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
 /**
  * 控制一次会话。
  */
 public final class ESplitterController {
+
     private Player player;
     private ItemStack selectedItem;
     private Map<Enchantment, Integer> currentEnchants;
-    private List<Set<Enchantment>> evaluatedEnchantGroupList;
+    private List<ESplitterEvaluatedEnchantSet> evaluatedEnchantGroupList;
+    private Set<ESplitterEvaluatedEnchantSet> removedEnchangGroupList = new HashSet<>();
     private ControllerConfig config;
 
     public ItemStack getSelectedItem() {
@@ -43,8 +51,9 @@ public final class ESplitterController {
     public Map<Enchantment, Integer> getCurrentEnchants() {
         return new LinkedHashMap<>(currentEnchants);
     }
-    public List<Set<Enchantment>> getEvaluatedEnchantGroupList() {
-        return new LinkedList<>(evaluatedEnchantGroupList.stream().map(LinkedHashSet::new).toList());
+
+    public List<ESplitterEvaluatedEnchantSet> getEvaluatedEnchantGroupList() {
+        return new LinkedList<>(evaluatedEnchantGroupList.stream().map(ESplitterEvaluatedEnchantSet::cloneIt).toList());
     }
 
     public static class ControllerConfig {
@@ -85,29 +94,34 @@ public final class ESplitterController {
      */
     private void evalEnchantsSet(){
         int maxEnchantSetSize = this.config.maxEnchantSetSize;
-        List<Set<Enchantment>> evaluatedEnchantGroupList = new LinkedList<>();
+        List<ESplitterEvaluatedEnchantSet> evaluatedEnchantGroupList = new LinkedList<>();
 
         // 这里做了一个以 maxEnchantSetSize 为单位的分组
-        Set<Enchantment> enchantSet = null;
+        ESplitterEvaluatedEnchantSet evaluatedResult = null;
         for (var ench : this.currentEnchants.keySet()){
-            if (enchantSet == null || enchantSet.size() >= maxEnchantSetSize) {
-                enchantSet = new LinkedHashSet<>();
-                evaluatedEnchantGroupList.add(enchantSet);
+            if (evaluatedResult == null || evaluatedResult.enchantSet.size() >= maxEnchantSetSize) {
+                evaluatedResult = new ESplitterEvaluatedEnchantSet();
+                evaluatedResult.enchantSet = new LinkedHashSet<>();
+                // not implements: 未实现：消耗内容分析
+                evaluatedResult.consumpsion = new ESplitterConsumpsion();
+                evaluatedEnchantGroupList.add(evaluatedResult);
             }
-            enchantSet.add(ench);
+            // 更新附魔容器
+            evaluatedResult.enchantSet.add(ench);
         }
 
         this.evaluatedEnchantGroupList = evaluatedEnchantGroupList;
+        this.removedEnchangGroupList.clear();
     }
 
     public boolean removeEnchants(int enchantSetIndex){
-        var enchantSet = this.evaluatedEnchantGroupList.get(enchantSetIndex);
-        if (enchantSet == null) {
+        var evalResult = this.evaluatedEnchantGroupList.get(enchantSetIndex);
+        if (removedEnchangGroupList.contains(evalResult)) {
             return false;
         } else {
-            this.evaluatedEnchantGroupList.set(enchantSetIndex, null);
+            removedEnchangGroupList.add(evalResult);
         }
-        for (var ench : enchantSet){
+        for (var ench : evalResult.enchantSet){
             this.currentEnchants.remove(ench);
         }
         this.updateItem();
@@ -116,6 +130,8 @@ public final class ESplitterController {
 
     /**
      * 在物品上移除已经被移除的附魔
+     * 
+     * @return 返回物品堆栈的副本
      */
     public ItemStack updateItem() {
         var item = this.selectedItem;
@@ -142,6 +158,7 @@ public final class ESplitterController {
         }
         return item.clone();
     }
+
 
     public boolean splitEnchantSet(int enchantSetIndex){
         throw new RuntimeException("method not implements");
