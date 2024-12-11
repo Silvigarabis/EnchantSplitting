@@ -1,10 +1,13 @@
 package io.github.silvigarabis.esplitter.data;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiFunction;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -155,123 +158,145 @@ public class ESplitterConsumpsion {
     public static boolean removeConsumpsion(Player player, ESplitterConsumpsion consumpsion) {
         // 所有操作都要在这时候依次同步完成以避免错误
         LinkedList<Runnable> instantOpList = new LinkedList<>();
-
-        // 处理经验
-        if (consumpsion.getExperienceLevel() != 0 || consumpsion.getExperiencePoint() != 0) {
-            final var playerCurrentExp = player.getTotalExperience();
-            final var playerCurrentLevel = player.getLevel();
-            final var expChange = consumpsion.getExperiencePoint();
-            final var expLevelChange = consumpsion.getExperienceLevel();
-
-            var expPoint = playerCurrentExp;
-            var expLevel = playerCurrentLevel;
-
-            if (expChange != 0) {
-                expPoint -= expChange;
-                if (expPoint < 0) {
-                    return false;
+        try {
+            for (var opGenerator : opGenerators) {
+                try {
+                    instantOpList.addAll(opGenerator.apply(player, consumpsion));
+                } catch (NoOpException ex) {
+                    continue;
                 }
-
-                // 这样做是为了获取在扣除经验点后的经验等级数目
-                player.setTotalExperience(expPoint);
-                expLevel = player.getLevel();
-                player.setTotalExperience(playerCurrentExp);
-
-                final var expPointFinalized = expPoint;
-                instantOpList.add(() -> {
-                    player.setTotalExperience(expPointFinalized);
-                });
             }
+        } catch (OpCantExecuteException ex) {
+            return false;
+        }
+        instantOpList.forEach(op -> op.run());
+        return true;
+    }
 
-            if (expLevelChange != 0) {
-                expLevel -= expLevelChange;
-                if (expLevel < 0) {
-                    return false;
-                }
-                final var expLevelFinalized = expLevel;
-                instantOpList.add(() -> {
-                    player.setTotalExperience(expLevelFinalized);
-                });
-            }
+    public static class NoOpException extends RuntimeException {
+    }
+    public static class OpCantExecuteException extends RuntimeException {
+    }
 
+    private static LinkedList<BiFunction<Player, ESplitterConsumpsion, LinkedList<Runnable>>> opGenerators = new LinkedList<>();
+    static {
+        opGenerators.add(ESplitterConsumpsion::genOpTakePlayerExp);
+        opGenerators.add(ESplitterConsumpsion::genOpTakePlayerInv);
+        opGenerators.add(ESplitterConsumpsion::genOpGivePlayerInv);
+    }
+
+    private static LinkedList<Runnable> genOpTakePlayerExp(Player player, ESplitterConsumpsion consumpsion){
+        LinkedList<Runnable> opList = new LinkedList<>();
+        if (consumpsion.getExperienceLevel() == 0 && consumpsion.getExperiencePoint() == 0) {
+            throw new NoOpException();
         }
 
+        final var playerCurrentExp = player.getTotalExperience();
+        final var playerCurrentLevel = player.getLevel();
+        final var expChange = consumpsion.getExperiencePoint();
+        final var expLevelChange = consumpsion.getExperienceLevel();
+
+        var expPoint = playerCurrentExp;
+        var expLevel = playerCurrentLevel;
+
+        if (expChange != 0) {
+            expPoint -= expChange;
+            if (expPoint < 0) {
+                throw new OpCantExecuteException();
+            }
+
+            // 这样做是为了获取在扣除经验点后的经验等级数目
+            player.setTotalExperience(expPoint);
+            expLevel = player.getLevel();
+            player.setTotalExperience(playerCurrentExp);
+
+            final var expPointFinalized = expPoint;
+            opList.add(() -> {
+                player.setTotalExperience(expPointFinalized);
+            });
+        }
+
+        if (expLevelChange != 0) {
+            expLevel -= expLevelChange;
+            if (expLevel < 0) {
+                throw new OpCantExecuteException();
+            }
+            final var expLevelFinalized = expLevel;
+            opList.add(() -> {
+                player.setTotalExperience(expLevelFinalized);
+            });
+        }
+        return opList;
+    }
+
+    private static LinkedList<Runnable> genOpTakePlayerInv(Player player, ESplitterConsumpsion consumpsion){
+        LinkedList<Runnable> opList = new LinkedList<>();
         final var item1 = consumpsion.getItem1();
         final var item2 = consumpsion.getItem2();
         final int item1Amount = consumpsion.getItem1Amount();
         final int item2Amount = consumpsion.getItem2Amount();
 
-        //BUG: 两个物品相同会报错
-
-        // 总之是移除物品
+        final List<Pair<Material, Integer>> itemsToRemove = new ArrayList<>();
         if (item1 != null) {
-            var storedItem1 = player.getInventory().all(item1);
-            int item1RemoveCounter = 0;
-            for (Map.Entry<Integer, ? extends ItemStack> entry : storedItem1.entrySet()) {
-                if (item1RemoveCounter == item1Amount) {
-                    break;
-                }
-
-                int slot = entry.getKey();
-                ItemStack itemStack = entry.getValue();
-                int amount = itemStack.getAmount();
-
-                int removedAmount = Math.min(amount, item1Amount - item1RemoveCounter);
-                amount -= removedAmount;
-                item1RemoveCounter += removedAmount;
-
-                if (amount == 0) {
-                    entry.setValue(null);
-                } else {
-                    itemStack.setAmount(amount);
-                }
-            }
-            if (item1RemoveCounter != item1Amount) {
-                return false;
-            }
-            instantOpList.add(() -> {
-                for (Map.Entry<Integer, ? extends ItemStack> entry : storedItem1.entrySet()) {
-                    int slot = entry.getKey();
-                    ItemStack itemStack = entry.getValue();
-                    player.getInventory().setItem(slot, itemStack);
-                }
-            });
+            itemsToRemove.add(Pair.of(item1, item1Amount));
         }
-
         if (item2 != null) {
-            var storedItem2 = player.getInventory().all(item2);
-            int item2RemoveCounter = 0;
-            for (Map.Entry<Integer, ? extends ItemStack> entry : storedItem2.entrySet()) {
-                if (item2RemoveCounter == item2Amount) {
+            itemsToRemove.add(Pair.of(item2, item2Amount));
+        }
+        if (itemsToRemove.isEmpty()) {
+            throw new NoOpException();
+        }
+
+        Map<Integer, ItemStack> inventoryModified = new HashMap<>();
+        int[] removalProgress = new int[itemsToRemove.size()];
+
+        // 遍历每个物品和数量
+        for (int i = 0; i < itemsToRemove.size(); i++) {
+            var entry = itemsToRemove.get(i);
+            Material material = entry.getKey();
+            int targetAmount = entry.getValue();
+
+            @SuppressWarnings("unchecked")
+            Map<Integer, ItemStack> storedItems = (Map<Integer, ItemStack>) player.getInventory().all(material);
+            storedItems.putAll(inventoryModified);
+
+            for (Map.Entry<Integer, ? extends ItemStack> slotEntry : storedItems.entrySet()) {
+                if (removalProgress[i] == targetAmount) {
                     break;
                 }
 
-                int slot = entry.getKey();
-                ItemStack itemStack = entry.getValue();
+                int slot = slotEntry.getKey();
+                ItemStack itemStack = slotEntry.getValue();
                 int amount = itemStack.getAmount();
 
-                int removedAmount = Math.min(amount, item2Amount - item2RemoveCounter);
-                amount -= removedAmount;
-                item2RemoveCounter += removedAmount;
+                if (itemStack.getType() != material) {
+                    continue;
+                }
 
-                if (amount == 0) {
-                    entry.setValue(null);
-                } else {
-                    itemStack.setAmount(amount);
+                int removedAmount = Math.min(amount, targetAmount - removalProgress[i]);
+                itemStack.setAmount(amount - removedAmount);
+                removalProgress[i] += removedAmount;
+
+                // 如果物品用完，清除
+                if (itemStack.getAmount() == 0) {
+                    inventoryModified.put(slot, null);
                 }
             }
-            if (item2RemoveCounter != item2Amount) {
-                return false;
+
+            // 如果目标数量未完成，返回失败
+            if (removalProgress[i] != targetAmount) {
+                throw new OpCantExecuteException();
             }
-            instantOpList.add(() -> {
-                for (Map.Entry<Integer, ? extends ItemStack> entry : storedItem2.entrySet()) {
-                    int slot = entry.getKey();
-                    ItemStack itemStack = entry.getValue();
-                    player.getInventory().setItem(slot, itemStack);
-                }
-            });
         }
 
+        // 提交所有变更
+        opList.add(() -> inventoryModified.forEach(player.getInventory()::setItem));
+
+        return opList;
+    }
+
+    private static LinkedList<Runnable> genOpGivePlayerInv(Player player, ESplitterConsumpsion consumpsion) {
+        LinkedList<Runnable> opList = new LinkedList<>();
         final var backItem1 = consumpsion.getBackItem1();
         final var backItem2 = consumpsion.getBackItem2();
         final int backItem1Amount = consumpsion.getBackItem1Amount();
@@ -284,16 +309,14 @@ public class ESplitterConsumpsion {
         if (backItem2 != null) {
             itemsToGive.add(new ItemStack(backItem2, backItem2Amount));
         }
+        if (itemsToGive.isEmpty()) {
+            throw new NoOpException();
+        }
         var dropLocation = player.getLocation();
         if (itemsToGive.size() > 0) {
-            instantOpList.add(() -> {
-                for (var item : itemsToGive) {
-                    dropLocation.getWorld().dropItem(dropLocation, item);
-                }
-            });
+            opList.add(() -> itemsToGive.forEach(item -> dropLocation.getWorld().dropItem(dropLocation, item)));
         }
 
-        instantOpList.forEach(op -> op.run());
-        return true;
+        return opList;
     }
 }
