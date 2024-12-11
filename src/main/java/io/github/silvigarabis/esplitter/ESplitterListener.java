@@ -10,7 +10,6 @@
 
 package io.github.silvigarabis.esplitter;
 
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -21,31 +20,18 @@ import org.bukkit.inventory.InventoryView;
 import java.util.Map;
 import java.util.HashMap;
 
-public final class EventListener implements Listener {
+public final class ESplitterListener implements Listener {
     
-    protected static Map<InventoryView, ESplitterGui> guiViews = new HashMap();
+    protected static Map<InventoryView, ESplitterGui> guiViews = new HashMap<>();
     
+    /* pass click event to gui */
     @EventHandler(ignoreCancelled=true)
     public void inventoryClick(InventoryClickEvent event){
-        var action = event.getAction();
-        var ctype = event.getClick();
-        var isTopInv = event.getClickedInventory() == event.getView().getTopInventory();
-        var slot = event.getSlot();
-        
-        Logger.debug("inventoryClick: "
-            + "isTopInv: "+isTopInv +", "
-            + "ctype: "+ctype.toString() +", "
-            + "action: "+action.toString() +", "
-            + "slot: "+slot +", "
-        );
-        
         var inventoryView = event.getView();
-        
-        if (!guiViews.containsKey(inventoryView)){
+        var gui = guiViews.get(inventoryView);
+        if (gui == null){
             return;
         }
-        
-        var gui = guiViews.get(inventoryView);
         try {
             gui.onInvClick(event);
         } catch (Exception ex){
@@ -54,19 +40,14 @@ public final class EventListener implements Listener {
         }
     }
 
+    /* pass close event to gui */
     @EventHandler(ignoreCancelled=true)
     public void inventoryClose(InventoryCloseEvent event){
-    
-        Logger.debug("inventoryClose: "
-        );
-
         var inventoryView = event.getView();
-        
-        if (!guiViews.containsKey(inventoryView)){
-            return;
-        }
-
         var gui = guiViews.get(inventoryView);
+        if (gui == null)
+            return;
+        
         guiViews.remove(inventoryView);
         try {
             gui.onInvClose(event);
@@ -76,19 +57,14 @@ public final class EventListener implements Listener {
         }
     }
 
+    /* pass drag event to gui */
     @EventHandler(ignoreCancelled=true)
     public void inventoryDrap(InventoryDragEvent event){
-        
-        Logger.debug("inventoryDrap: "
-        );
-        
         var inventoryView = event.getView();
-        
-        if (!guiViews.containsKey(inventoryView)){
-            return;
-        }
-
         var gui = guiViews.get(inventoryView);
+        if (gui == null)
+            return;
+
         try {
             gui.onInvDrag(event);
         } catch (Exception ex){
@@ -98,7 +74,7 @@ public final class EventListener implements Listener {
     }
     
     private static void closeAll(){
-        ESplitterPlugin.getPlugin().getLogger().severe("处理事件时出现未知错误，强行关闭所有窗口");
+        ESplitterPlugin.getPluginInstance().getLogger().severe("处理事件时出现未知错误，强行关闭所有窗口");
 
         for (Map.Entry<InventoryView, ESplitterGui> entry : guiViews.entrySet()){
             try {
@@ -112,6 +88,6 @@ public final class EventListener implements Listener {
 
         guiViews.clear();
 
-        ESplitterPlugin.getPlugin().getLogger().severe("所有窗口已被关闭");
+        ESplitterPlugin.getPluginInstance().getLogger().severe("所有窗口已被关闭");
     }
 }
