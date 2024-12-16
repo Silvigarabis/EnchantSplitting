@@ -1,13 +1,3 @@
-/*
-   Copyright (c) 2023 Silvigarabis
-   EnchantmentSplitter is licensed under Mulan PSL v2.
-   You can use this software according to the terms and conditions of the Mulan PSL v2. 
-   You may obtain a copy of Mulan PSL v2 at:
-            http://license.coscl.org.cn/MulanPSL2 
-   THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.  
-   See the Mulan PSL v2 for more details.  
-*/
-
 package io.github.silvigarabis.esplitter;
 
 import org.bukkit.Bukkit;
@@ -207,7 +197,7 @@ public class ESplitterGui {
         inventory = Bukkit.createInventory(player, 54, "Es");
         inventoryView = player.openInventory(inventory);
         
-        EventListener.guiViews.put(inventoryView, this);
+        ESplitterListener.guiViews.put(inventoryView, this);
         
         this.update();
         
@@ -357,11 +347,11 @@ public class ESplitterGui {
             //比如这段地方我使用了一个“在此之外”的操作来完成了
             //玩家可以直接拿出来附魔书的特性
 
-            boolean result = this.ctrl.splitEnchantment(enchantSet);
+            boolean result = this.ctrl.splitEnchantSet(enchantSet);
             canPickup = result;
             removeElement = result;
         } else if (enchantSet != null && operationMode == OperationMode.GRIND){
-            if (this.ctrl.grindEnchantment(enchantSet)){
+            if (this.ctrl.grindEnchantSet(enchantSet)){
                 removeElement = true;
             }
             
