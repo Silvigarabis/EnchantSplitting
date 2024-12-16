@@ -1,5 +1,6 @@
 package io.github.silvigarabis.esplitter;
 
+import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -18,27 +19,35 @@ public final class ESplitterPlugin extends JavaPlugin {
     private static ESplitterPlugin plugin = null;
     
     private Logger logger;
+    private Configuration config;
 
     @Override
     public void onEnable() {
         this.logger = this.getLogger();
 
         logger.info("ESplitter 正在加载。");
-        
-        if (plugin == null){
+
+        if (plugin == null) {
             plugin = this;
         } else {
             logger.severe("插件状态异常");
             throw new IllegalStateException("plugin is not null");
         }
 
+        reloadConfig();
+
         registerEvents();
         registerCommands();
-        
+
         logger.info("ESplitter 已加载。");
         logger.info("ESplitter 插件，一个让玩家可以分离装备上的附魔的插件");
         logger.info("源代码： https://github.com/Imeaces/EnchantmentSplitter");
         logger.info("你可以在在GitHub上提出建议，或者反馈错误： https://github.com/Imeaces/EnchantmentSplitter/issues");
+    }
+    
+    public void reloadConfig() {
+        config = this.getConfig();
+        config.setDefaults(ESplitterConfig.DEFAULT_CONFIGURATIONS);
     }
 
     private static void registerEvents(){
