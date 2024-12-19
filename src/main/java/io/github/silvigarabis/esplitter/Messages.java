@@ -30,6 +30,8 @@ public class Messages {
         msg("取消", "inv.gui.button.cancel");
     public static final Messages invGuiErrorClose =
         msg("插件出现了未知错误，请联系管理员", "inv.gui.error.close");
+    public static final Messages invGuiElementTitle =
+        msg("共 %d 个附魔", "inv.gui.element.title");
 
     // @formatter:on
 

@@ -42,12 +42,12 @@ public final class ESplitterController {
     public ItemStack getSelectedItem() {
         return selectedItem.clone();
     }
-    public Map<Enchantment, Integer> getCurrentEnchants() {
-        return new LinkedHashMap<>(currentEnchants);
+    public @Unmodifiable Map<Enchantment, Integer> getCurrentEnchants() {
+        return Collections.unmodifiableMap(currentEnchants);
     }
 
-    public List<ESplitterEvaluatedEnchantSet> getEvaluatedEnchantGroupList() {
-        return new LinkedList<>(evaluatedEnchantGroupList.stream().map(ESplitterEvaluatedEnchantSet::cloneIt).toList());
+    public @Unmodifiable List<ESplitterEvaluatedEnchantSet> getEvaluatedEnchantGroupList() {
+        return Collections.unmodifiableList(evaluatedEnchantGroupList);
     }
 
     public static class ControllerConfig {

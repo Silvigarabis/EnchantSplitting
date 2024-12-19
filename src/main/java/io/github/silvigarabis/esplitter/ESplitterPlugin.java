@@ -5,6 +5,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import io.github.silvigarabis.esplitter.commands.ESplitterComand;
+import io.github.silvigarabis.esplitter.invgui.ESplitterInvGuiListener;
 
 import java.util.logging.Logger;
 

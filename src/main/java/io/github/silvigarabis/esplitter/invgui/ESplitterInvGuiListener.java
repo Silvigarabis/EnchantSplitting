@@ -1,4 +1,4 @@
-package io.github.silvigarabis.esplitter;
+package io.github.silvigarabis.esplitter.invgui;
 
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -6,6 +6,8 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.InventoryView;
+
+import io.github.silvigarabis.esplitter.ESplitterPlugin;
 
 import java.util.Map;
 import java.util.HashMap;
@@ -68,7 +70,7 @@ public final class ESplitterInvGuiListener implements Listener {
 
         for (Map.Entry<InventoryView, ESplitterInvGui> entry : guiViews.entrySet()){
             try {
-                entry.getValue().closeGui();
+                // entry.getValue().closeGui();
                 entry.getKey().getPlayer().closeInventory();
                 entry.getKey().getPlayer().sendMessage("[ESplitter] 出现未知错误");
             } catch (Throwable ignored){
