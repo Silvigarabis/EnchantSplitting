@@ -29,6 +29,10 @@ import java.util.function.Function;
 public final class ESplitterController {
 
     private Player player;
+    public Player getPlayer() {
+        return player;
+    }
+
     private ItemStack selectedItem;
     private Map<Enchantment, Integer> currentEnchants;
     private List<ESplitterEvaluatedEnchantSet> evaluatedEnchantGroupList;

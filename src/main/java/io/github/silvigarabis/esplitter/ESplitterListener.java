@@ -12,7 +12,7 @@ import java.util.HashMap;
 
 public final class ESplitterListener implements Listener {
     
-    protected static Map<InventoryView, ESplitterGui> guiViews = new HashMap<>();
+    protected static Map<InventoryView, ESplitterInvGui> guiViews = new HashMap<>();
     
     /* pass click event to gui */
     @EventHandler(ignoreCancelled=true)
@@ -66,7 +66,7 @@ public final class ESplitterListener implements Listener {
     private static void closeAll(){
         ESplitterPlugin.getPluginInstance().getLogger().severe("处理事件时出现未知错误，强行关闭所有窗口");
 
-        for (Map.Entry<InventoryView, ESplitterGui> entry : guiViews.entrySet()){
+        for (Map.Entry<InventoryView, ESplitterInvGui> entry : guiViews.entrySet()){
             try {
                 entry.getValue().closeGui();
                 entry.getKey().getPlayer().closeInventory();
