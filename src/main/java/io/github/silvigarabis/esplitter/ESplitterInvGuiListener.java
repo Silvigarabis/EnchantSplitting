@@ -10,9 +10,9 @@ import org.bukkit.inventory.InventoryView;
 import java.util.Map;
 import java.util.HashMap;
 
-public final class ESplitterListener implements Listener {
+public final class ESplitterInvGuiListener implements Listener {
     
-    protected static Map<InventoryView, ESplitterInvGui> guiViews = new HashMap<>();
+    private static final Map<InventoryView, ESplitterInvGui> guiViews = new HashMap<>();
     
     /* pass click event to gui */
     @EventHandler(ignoreCancelled=true)

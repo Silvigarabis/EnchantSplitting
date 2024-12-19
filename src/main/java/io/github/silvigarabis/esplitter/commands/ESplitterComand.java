@@ -33,7 +33,7 @@ public class ESplitterComand implements CommandExecutor {
         getLogger().info("正在处理指令……");
 
         if (!Permissions.COMMAND.checkPermission(sender)) {
-            sender.sendMessage(Messages.noPerm.getMessage());
+            sender.sendMessage(Messages.noPerm.getText());
             return;
         }
 
@@ -61,13 +61,13 @@ public class ESplitterComand implements CommandExecutor {
         Player player = null;
         if (p_playerName != null) { // spec arg: player
             if (!Permissions.OP_OTHER_PLAYER.checkPermission(sender)){
-                sender.sendMessage(Messages.noPerm.getMessage());
+                sender.sendMessage(Messages.noPerm.getText());
                 return;
             }
 
             player = plugin.getPlayer(p_playerName);
         } else if (!(sender instanceof Player)) {  // is console
-            sender.sendMessage(Messages.noPlayerOnConsole.getMessage());
+            sender.sendMessage(Messages.noPlayerOnConsole.getText());
             return;
         } else {  // else case: player run command without arg: player, use sender self
             player = (Player) sender;
@@ -75,7 +75,7 @@ public class ESplitterComand implements CommandExecutor {
 
         // 执行操作
         if (player == null){
-            sender.sendMessage(Messages.noPlayer.getMessage());
+            sender.sendMessage(Messages.noPlayer.getText());
         } else {
             plugin.openGui(player);
         }
@@ -101,7 +101,7 @@ public class ESplitterComand implements CommandExecutor {
                 cmd_help(sender, label, args);
                 break;
             default:
-                sender.sendMessage(Messages.unknownCommand.getMessage());
+                sender.sendMessage(Messages.unknownCommand.getText());
                 cmd_help(sender, label, args);
                 break;
         }

@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
@@ -103,7 +104,7 @@ public class ESplitterInvGui {
     private static final void createLocalizedButton(int slot, Messages msg, Material material) {
         final ItemStack item0 = new ItemStack(material);
         var meta0 = item0.getItemMeta();
-        meta0.setDisplayName(msg.getMessage());
+        meta0.setDisplayName(msg.getText());
         item0.setItemMeta(meta0);
 
         slotItemsStatic[slot] = item0.clone();
@@ -111,7 +112,7 @@ public class ESplitterInvGui {
         slotItemCreators[slot] = (player) -> {
             var metaDyn = meta0.clone();
             var itemDyn = item0.clone();
-            metaDyn.setDisplayName(msg.getMessagePlayer(player));
+            metaDyn.setDisplayName(msg.getTextPlayer(player));
             itemDyn.setItemMeta(metaDyn);
             return itemDyn;
         };
@@ -159,7 +160,7 @@ public class ESplitterInvGui {
     private Player player;
     private ESplitterController controller;
     private OperationMode operationMode = OperationMode.SPLIT;
-    private List<List<ESplitterEvaluatedEnchantSet>> pages = new ArrayList<>();
+    private List<List<ESplitterEvaluatedEnchantSet>> pages = new LinkedList<>();
 
     private void callSlotCreator(int slot) {
         var creator = slotItemCreators[slot];
@@ -204,8 +205,7 @@ public class ESplitterInvGui {
 
     public void clearElements() {
         for (int idx : slotsElements) {
-            if (slotItems.containsKey(idx))
-                slotItems.remove(idx);
+            slotItems[idx] = null;
         }
 
         update();
@@ -280,7 +280,7 @@ public class ESplitterInvGui {
         inventory = Bukkit.createInventory(player, 54, "Es");
         inventoryView = player.openInventory(inventory);
 
-        ESplitterListener.guiViews.put(inventoryView, this);
+        ESplitterInvGuiListener.guiViews.put(inventoryView, this);
 
         this.update();
 
@@ -371,48 +371,6 @@ public class ESplitterInvGui {
         return -1;
     }
 
-    public static enum OperationMode {
-        SPLIT, GRIND
-    }
-
-    private OperationMode operationMode = OperationMode.SPLIT;
-
-    private void switchOperationMode() {
-        if (operationMode == OperationMode.SPLIT) {
-            operationMode = OperationMode.GRIND;
-        } else if (operationMode == OperationMode.GRIND) {
-            operationMode = OperationMode.SPLIT;
-        }
-
-        switchOperationMode(operationMode);
-    }
-
-    private void switchOperationMode(OperationMode mode) {
-        var item = noticeItem.clone();
-
-        var meta = item.getItemMeta();
-
-        List<String> lore = new ArrayList<>();
-        if (operationMode == OperationMode.SPLIT) {
-            lore.add("当前模式: 分离模式");
-            lore.add("点击附魔项目以分离");
-        } else if (operationMode == OperationMode.GRIND) {
-            lore.add("当前模式: 去魔模式");
-            lore.add("点击附魔项目以移除");
-        } else {
-            //以目前的逻辑来说不会有，但是我加一个也没关系吧
-            lore.add("错误: 未知的模式，你做了什么？");
-        }
-
-        meta.setLore(lore);
-
-        item.setItemMeta(meta);
-
-        slotItems.put(slotItemStatusMode, item);
-
-        update();
-    }
-
     /**
      * 玩家尝试取出附魔项目时调用此方法，根据模式的不同，有着不一样的逻辑。
      */
@@ -453,7 +411,7 @@ public class ESplitterInvGui {
         return canPickup;
     }
 
-    protected void onInvClick(InventoryClickEvent event) {
+    public void onInvClick(InventoryClickEvent event) {
         if (event.getClickedInventory() != this.inventory)
             return;
 
@@ -541,12 +499,12 @@ public class ESplitterInvGui {
 
     }
 
-    protected void onInvClose(InventoryCloseEvent event) {
+    public void onInvClose(InventoryCloseEvent event) {
         this.closeGui();
         Logger.debug("close view for player " + event.getPlayer().getName());
     }
 
-    protected void onInvDrag(InventoryDragEvent event) {
+    public void onInvDrag(InventoryDragEvent event) {
         //暂时来说不会处理拖动物品，而是直接取消
         if (event.getInventory() == this.inventory)
             event.setCancelled(true);

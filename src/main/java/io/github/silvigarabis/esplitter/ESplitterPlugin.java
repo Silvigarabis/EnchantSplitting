@@ -51,7 +51,7 @@ public final class ESplitterPlugin extends JavaPlugin {
     }
 
     private static void registerEvents(){
-        plugin.getServer().getPluginManager().registerEvents(new ESplitterListener(), plugin);
+        plugin.getServer().getPluginManager().registerEvents(new ESplitterInvGuiListener(), plugin);
     }
 
     private static void registerCommands(){

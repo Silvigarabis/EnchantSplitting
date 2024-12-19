@@ -1,7 +1,11 @@
+# 语言
+language: zh_cn
+
 # 分离附魔的相关配置
 split-enchant:
    # 是否需要空的书来承载分离的附魔？
    need-empty-book: false
+   allow-enchant-book-split: true
 
-# 配置文件版本，不要修改这个
+# 配置文件版本
 config-version: 1
