@@ -18,14 +18,20 @@ public class Messages {
         msg("在控制台中必须指定玩家", "no player on console");
     public static final Messages unknownCommand =
         msg("未知的命令格式", "unknown command");
+    public static final Messages invGuiTitle =
+        msg("附魔分离控制台", "inv.gui.title");
     public static final Messages invGuiStatusModeSplit =
         msg("分离模式", "inv.gui.status.split");
     public static final Messages invGuiStatusModeGrind =
         msg("除魔模式", "inv.gui.status.grind");
+    public static final Messages invGuiStatusModeUnknown =
+        msg("未知模式", "inv.gui.status.unknown");
     public static final Messages invGuiButtonPgUp =
         msg("上一页", "inv.gui.button.pgup");
     public static final Messages invGuiButtonPgDown =
         msg("下一页", "inv.gui.button.pgdown");
+    public static final Messages invGuiButtonComplete =
+        msg("完成", "inv.gui.button.complete");
     public static final Messages invGuiButtonCancel =
         msg("取消", "inv.gui.button.cancel");
     public static final Messages invGuiErrorClose =
@@ -40,19 +46,19 @@ public class Messages {
 
     public String getMessage(Object... places) {
         // not fully implements
-        return getText(places);
+        return "[ESplitter] " + getText(places);
     }
 
     public String getMessagePlayer(Player player, Object... places) {
         // not fully implements
-        return getTextPlayer(player, places);
+        return "[ESplitter] " + getPlayerText(player, places);
     }
 
     public String getText(Object... places) {
         return MessageFormat.format(this.text, (Object[]) places);
     }
 
-    public String getTextPlayer(Player player, Object... places) {
+    public String getPlayerText(Player player, Object... places) {
         // not fully implements
         return getText(places);
     }

@@ -10,11 +10,11 @@ import org.bukkit.inventory.InventoryView;
 import io.github.silvigarabis.esplitter.ESplitterPlugin;
 
 import java.util.Map;
-import java.util.HashMap;
+import java.util.WeakHashMap;
 
 public final class ESplitterInvGuiListener implements Listener {
     
-    private static final Map<InventoryView, ESplitterInvGui> guiViews = new HashMap<>();
+    static final Map<InventoryView, ESplitterInvGui> guiViews = new WeakHashMap();
     
     /* pass click event to gui */
     @EventHandler(ignoreCancelled=true)
