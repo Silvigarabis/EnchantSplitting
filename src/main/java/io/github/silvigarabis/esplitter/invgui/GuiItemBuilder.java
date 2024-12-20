@@ -2,6 +2,8 @@ package io.github.silvigarabis.esplitter.invgui;
 
 import static org.bukkit.Material.ENCHANTED_BOOK;
 
+import java.util.Arrays;
+
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -10,6 +12,7 @@ import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import io.github.silvigarabis.esplitter.Messages;
+import io.github.silvigarabis.esplitter.data.ESplitterConsumpsion;
 
 public class GuiItemBuilder {
 
@@ -24,6 +27,11 @@ public class GuiItemBuilder {
     
         // 设置显示标题 (title)
         itemElementMeta.setDisplayName(Messages.invGuiElementTitle.getText(enchantSet.enchantSet.size()));
+
+        // 设置动作消耗提示文本 (lores)
+        String consumpsionTipText =
+            ESplitterConsumpsion.generateConsumptionText(enchantSet.consumpsion, gui.getPlayer());
+        itemElementMeta.setLore(Arrays.asList(consumpsionTipText.split("\\R")));
     
         // 添加附魔 (enchants)
         for (Enchantment ench : enchantSet.enchantSet) {

@@ -12,6 +12,8 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import io.github.silvigarabis.esplitter.Messages;
+
 public class ESplitterConsumpsion {
     private int experiencePoint;
     private int experienceLevel;
@@ -154,6 +156,100 @@ public class ESplitterConsumpsion {
                 this.item2, this.item2Amount, this.backItem1, this.backItem1Amount, this.backItem2,
                 this.backItem2Amount);
     }
+
+    public static String generateConsumptionText(ESplitterConsumpsion consumption, Player player) {
+        StringBuilder text = new StringBuilder();
+
+        // 添加经验信息
+        if (consumption.getExperiencePoint() > 0) {
+            text.append(Messages.consumpsionExperiencePoints
+                .getPlayerText(player, consumption.getExperiencePoint()))
+                .append("\n");
+        }
+        if (consumption.getExperienceLevel() > 0) {
+            text.append(Messages.consumpsionExperienceLevels
+                .getPlayerText(player, consumption.getExperienceLevel()))
+                .append("\n");
+        }
+
+        // 添加消耗物品信息
+        if (consumption.getItem1() != null && consumption.getItem1Amount() > 0) {
+            text.append(Messages.consumpsionItem
+                .getPlayerText(player, consumption.getItem1(), consumption.getItem1Amount()))
+                .append("\n");
+        }
+        if (consumption.getItem2() != null && consumption.getItem2Amount() > 0) {
+            text.append(Messages.consumpsionItem
+                .getPlayerText(player, consumption.getItem2(), consumption.getItem2Amount()))
+                .append("\n");
+        }
+
+        // 添加返还物品信息
+        if (consumption.getBackItem1() != null && consumption.getBackItem1Amount() > 0) {
+            text.append(Messages.consumpsionReturnItem
+                .getPlayerText(player, consumption.getBackItem1(), consumption.getBackItem1Amount()))
+                .append("\n");
+        }
+        if (consumption.getBackItem2() != null && consumption.getBackItem2Amount() > 0) {
+            text.append(Messages.consumpsionReturnItem
+                .getPlayerText(player, consumption.getBackItem2(), consumption.getBackItem2Amount()))
+                .append("\n");
+        }
+
+        // 如果没有任何内容，则显示“无消耗”信息
+        if (text.length() == 0) {
+            text.append(Messages.consumpsionNone.getPlayerText(player));
+        }
+
+        return text.toString().trim();
+    }
+    public static String generateConsumptionText(ESplitterConsumpsion consumption) {
+        StringBuilder text = new StringBuilder();
+
+        // 添加经验信息
+        if (consumption.getExperiencePoint() > 0) {
+            text.append(Messages.consumpsionExperiencePoints
+                .getText(consumption.getExperiencePoint()))
+                .append("\n");
+        }
+        if (consumption.getExperienceLevel() > 0) {
+            text.append(Messages.consumpsionExperienceLevels
+                .getText(consumption.getExperienceLevel()))
+                .append("\n");
+        }
+
+        // 添加消耗物品信息
+        if (consumption.getItem1() != null && consumption.getItem1Amount() > 0) {
+            text.append(Messages.consumpsionItem
+                .getText(consumption.getItem1(), consumption.getItem1Amount()))
+                .append("\n");
+        }
+        if (consumption.getItem2() != null && consumption.getItem2Amount() > 0) {
+            text.append(Messages.consumpsionItem
+                .getText(consumption.getItem2(), consumption.getItem2Amount()))
+                .append("\n");
+        }
+
+        // 添加返还物品信息
+        if (consumption.getBackItem1() != null && consumption.getBackItem1Amount() > 0) {
+            text.append(Messages.consumpsionReturnItem
+                .getText(consumption.getBackItem1(), consumption.getBackItem1Amount()))
+                .append("\n");
+        }
+        if (consumption.getBackItem2() != null && consumption.getBackItem2Amount() > 0) {
+            text.append(Messages.consumpsionReturnItem
+                .getText(consumption.getBackItem2(), consumption.getBackItem2Amount()))
+                .append("\n");
+        }
+
+        // 如果没有任何内容，则显示“无消耗”信息
+        if (text.length() == 0) {
+            text.append(Messages.consumpsionNone.getText());
+        }
+
+        return text.toString().trim();
+    }
+
 
     public static boolean removeConsumpsion(Player player, ESplitterConsumpsion consumpsion) {
         // 所有操作都要在这时候依次同步完成以避免错误
