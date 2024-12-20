@@ -18,6 +18,7 @@ public class Messages {
         msg("在控制台中必须指定玩家", "no player on console");
     public static final Messages unknownCommand =
         msg("未知的命令格式", "unknown command");
+
     public static final Messages invGuiTitle =
         msg("附魔分离控制台", "inv.gui.title");
     public static final Messages invGuiStatusModeSplit =
@@ -38,6 +39,17 @@ public class Messages {
         msg("插件出现了未知错误，请联系管理员", "inv.gui.error.close");
     public static final Messages invGuiElementTitle =
         msg("共 %d 个附魔", "inv.gui.element.title");
+
+    public static final Messages consumpsionExperienceLevels =
+        msg("需要经验等级 x %d", "consumption.experience.levels");
+    public static final Messages consumpsionExperiencePoints =
+        msg("需要经验点数 x %d", "consumption.experience.points");
+    public static final Messages consumpsionItem =
+        msg("需要 %d 个 %s", "consumption.item");
+    public static final Messages consumpsionReturnItem =
+        msg("返还物品：%s x %d", "consumption.return.item");
+    public static final Messages consumpsionNone =
+        msg("无额外消耗", "consumption.none");
 
     // @formatter:on
 

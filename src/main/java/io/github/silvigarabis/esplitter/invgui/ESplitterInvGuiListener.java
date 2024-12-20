@@ -14,7 +14,7 @@ import java.util.WeakHashMap;
 
 public final class ESplitterInvGuiListener implements Listener {
     
-    static final Map<InventoryView, ESplitterInvGui> guiViews = new WeakHashMap();
+    static final Map<InventoryView, ESplitterInvGui> guiViews = new WeakHashMap<>();
     
     /* pass click event to gui */
     @EventHandler(ignoreCancelled=true)

@@ -5,6 +5,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.jetbrains.annotations.Unmodifiable;
+import org.jetbrains.annotations.UnmodifiableView;
 
 import io.github.silvigarabis.esplitter.data.ESplitterConsumpsion;
 import io.github.silvigarabis.esplitter.data.ESplitterEvaluatedEnchantSet;
@@ -42,11 +43,11 @@ public final class ESplitterController {
     public ItemStack getSelectedItem() {
         return selectedItem.clone();
     }
-    public @Unmodifiable Map<Enchantment, Integer> getCurrentEnchants() {
+    public @UnmodifiableView Map<Enchantment, Integer> getCurrentEnchants() {
         return Collections.unmodifiableMap(currentEnchants);
     }
 
-    public @Unmodifiable List<ESplitterEvaluatedEnchantSet> getEvaluatedEnchantGroupList() {
+    public @UnmodifiableView List<ESplitterEvaluatedEnchantSet> getEvaluatedEnchantGroupList() {
         return Collections.unmodifiableList(evaluatedEnchantGroupList);
     }
 

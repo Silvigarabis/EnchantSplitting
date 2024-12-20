@@ -100,6 +100,10 @@ public class ESplitterInvGui {
 
     private ItemStack[] slotItems = Arrays.stream(slotItemsStatic).map(item -> item.clone()).toArray(ItemStack[]::new);
     private Player player;
+    public Player getPlayer() {
+        return player;
+    }
+
     ESplitterController controller;
     private OperationMode operationMode = OperationMode.SPLIT;
     List<ESplitterEvaluatedEnchantSet> cachedEvaluatedEnchantSetList = null;
