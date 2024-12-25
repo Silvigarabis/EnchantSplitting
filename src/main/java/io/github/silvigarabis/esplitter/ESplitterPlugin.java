@@ -1,3 +1,13 @@
+/*
+   Copyright (c) 2024 Silvigarabis
+   EnchantmentSplitter is licensed under Mulan PSL v2.
+   You can use this software according to the terms and conditions of the Mulan PSL v2. 
+   You may obtain a copy of Mulan PSL v2 at:
+            http://license.coscl.org.cn/MulanPSL2 
+   THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.  
+   See the Mulan PSL v2 for more details.  
+*/
+
 package io.github.silvigarabis.esplitter;
 
 import org.bukkit.configuration.Configuration;
@@ -6,32 +16,39 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import io.github.silvigarabis.esplitter.commands.ESplitterComand;
 import io.github.silvigarabis.esplitter.invgui.ESplitterInvGuiListener;
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.util.logging.Logger;
+import java.io.File;
+import java.util.List;
 
 public final class ESplitterPlugin extends JavaPlugin {
-    
+
+    private static ESplitterPlugin pluginInstance = null;
     public static ESplitterPlugin getPluginInstance(){
-        if (plugin == null) {
+        if (pluginInstance == null) {
             throw new RuntimeException("plugin instance not found");
         }
-        return plugin;
+        return pluginInstance;
     }
-    private static ESplitterPlugin plugin = null;
     
-    private Logger logger;
-    private Configuration config;
+    @Override
+    public void onDisable() {
+        if (this.equals(pluginInstance)){
+            pluginInstance = null;
+        }
+        Messages.consoleInfo(Messages.MessageKey.PLUGIN_DISABLED);
+    }
 
     @Override
-    public void onEnable() {
-        this.logger = this.getLogger();
-
-        logger.info("ESplitter 正在加载。");
-
-        if (plugin == null) {
-            plugin = this;
+    public void onEnable(){
+        Messages.consoleInfo(Messages.MessageKey.PLUGIN_LOADING);
+        
+        if (pluginInstance == null){
+            pluginInstance = this;
         } else {
-            logger.severe("插件状态异常");
+            getLogger().severe("插件状态异常");
             throw new IllegalStateException("plugin is not null");
         }
 
@@ -39,32 +56,49 @@ public final class ESplitterPlugin extends JavaPlugin {
 
         registerEvents();
         registerCommands();
-
-        logger.info("ESplitter 已加载。");
-        logger.info("ESplitter 插件，一个让玩家可以分离装备上的附魔的插件");
-        logger.info("源代码： https://github.com/Imeaces/EnchantmentSplitter");
-        logger.info("你可以在在GitHub上提出建议，或者反馈错误： https://github.com/Imeaces/EnchantmentSplitter/issues");
-    }
-    
-    public void reloadConfig() {
-        config = this.getConfig();
-        config.setDefaults(ESplitterConfig.DEFAULT_CONFIGURATIONS);
+        
+        getLogger().info(Messages.MessageKey.PLUGIN_ENABLED.getMessageString());
+        getLogger().info("ESplitter 插件，一个让玩家可以分离装备上的附魔的插件");
+        getLogger().info("源代码： https://github.com/Imeaces/EnchantmentSplitter");
+        getLogger().info("你可以在在GitHub上提出建议，或者反馈错误： https://github.com/Imeaces/EnchantmentSplitter/issues");
     }
 
     private static void registerEvents(){
-        plugin.getServer().getPluginManager().registerEvents(new ESplitterInvGuiListener(), plugin);
+        pluginInstance.getServer().getPluginManager().registerEvents(new ESplitterInvGuiListener(), pluginInstance);
     }
 
     private static void registerCommands(){
-        plugin.getCommand("esplitter").setExecutor(new ESplitterComand(plugin));
+        pluginInstance.getCommand("esplitter").setExecutor(new ESplitterComand(pluginInstance));
     }
-
+    
     @Override
-    public void onDisable() {
-        if (this.equals(plugin)){
-            plugin = null;
+    public void reloadConfig(){
+        getLogger().info(Messages.MessageKey.PLUGIN_RELOADING_CONFIG.getMessageString());
+
+        // config.yml
+        super.reloadConfig();
+        this.getConfig().setDefaults(ESplitterConfig.DEFAULT_CONFIGURATIONS);
+
+        // message.yml
+        getLogger().info(Messages.MessageKey.PLUGIN_RELOADING_MESSAGE_CONFIG.getMessageString());
+        saveResource("message.yml", false);
+        YamlConfiguration messageConfig = YamlConfiguration.loadConfiguration(new File(getDataFolder().getPath(), "message.yml"));
+        Messages.loadMessageConfig(messageConfig);
+        List<Messages.MessageKey> missingMessageKeys = Messages.getMissingMessageKeys();
+        if (missingMessageKeys.size() == 0){
+            Messages.consoleInfo(Messages.MessageKey.PLUGIN_MESSAGE_CONFIG_LOADED);
+        } else {
+            //大致上就是把缺失的key打印出来
+            Messages.consoleWarn(
+                Messages.MessageKey.PLUGIN_MESSAGE_CONFIG_LOAD_MISSING,
+                Integer.toString(missingMessageKeys.size()),
+                missingMessageKeys
+                  .stream()
+                  .map(key -> key.getMessageKey())
+                  .toList()
+                  .toString()
+            );
         }
-        logger.info("插件已禁用");
     }
 
     public void openGui(Player player) {

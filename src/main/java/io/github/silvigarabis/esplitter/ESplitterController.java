@@ -60,6 +60,17 @@ public final class ESplitterController {
         this.player = player;
     }
 
+    public static boolean isItemAcceptable(ItemStack item){
+        //附魔书暂时不支持（软限制）
+        return !item.getType().equals(ENCHANTED_BOOK);
+    }
+
+    public boolean isItemAcceptable(){
+        return itemAccepted;
+    }
+    
+    private boolean itemAccepted = false;
+
     public void selectItem(ItemStack item){
         if (item != null) {
             this.selectedItem = item.clone();
