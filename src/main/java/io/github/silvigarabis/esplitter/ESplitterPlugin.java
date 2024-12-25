@@ -38,12 +38,12 @@ public final class ESplitterPlugin extends JavaPlugin {
         if (this.equals(pluginInstance)){
             pluginInstance = null;
         }
-        Messages.consoleInfo(Messages.MessageKey.PLUGIN_DISABLED);
+        getLogger().info("插件已禁用");
     }
 
     @Override
     public void onEnable(){
-        Messages.consoleInfo(Messages.MessageKey.PLUGIN_LOADING);
+        getLogger().info("加载中");
         
         if (pluginInstance == null){
             pluginInstance = this;
@@ -57,7 +57,7 @@ public final class ESplitterPlugin extends JavaPlugin {
         registerEvents();
         registerCommands();
         
-        getLogger().info(Messages.MessageKey.PLUGIN_ENABLED.getMessageString());
+        getLogger().info("插件已启用！");
         getLogger().info("ESplitter 插件，一个让玩家可以分离装备上的附魔的插件");
         getLogger().info("源代码： https://github.com/Imeaces/EnchantmentSplitter");
         getLogger().info("你可以在在GitHub上提出建议，或者反馈错误： https://github.com/Imeaces/EnchantmentSplitter/issues");
@@ -73,32 +73,14 @@ public final class ESplitterPlugin extends JavaPlugin {
     
     @Override
     public void reloadConfig(){
-        getLogger().info(Messages.MessageKey.PLUGIN_RELOADING_CONFIG.getMessageString());
+        getLogger().info("重新加载配置中");
 
         // config.yml
         super.reloadConfig();
         this.getConfig().setDefaults(ESplitterConfig.DEFAULT_CONFIGURATIONS);
+        getLogger().info("已加载插件配置");
 
         // message.yml
-        getLogger().info(Messages.MessageKey.PLUGIN_RELOADING_MESSAGE_CONFIG.getMessageString());
-        saveResource("message.yml", false);
-        YamlConfiguration messageConfig = YamlConfiguration.loadConfiguration(new File(getDataFolder().getPath(), "message.yml"));
-        Messages.loadMessageConfig(messageConfig);
-        List<Messages.MessageKey> missingMessageKeys = Messages.getMissingMessageKeys();
-        if (missingMessageKeys.size() == 0){
-            Messages.consoleInfo(Messages.MessageKey.PLUGIN_MESSAGE_CONFIG_LOADED);
-        } else {
-            //大致上就是把缺失的key打印出来
-            Messages.consoleWarn(
-                Messages.MessageKey.PLUGIN_MESSAGE_CONFIG_LOAD_MISSING,
-                Integer.toString(missingMessageKeys.size()),
-                missingMessageKeys
-                  .stream()
-                  .map(key -> key.getMessageKey())
-                  .toList()
-                  .toString()
-            );
-        }
     }
 
     public void openGui(Player player) {
